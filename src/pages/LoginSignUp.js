@@ -38,8 +38,35 @@ export default function LoginSignup() {
   };
 
   // Función para el envío de datos
-  const onSubmit = (data) => {
-    console.log("Formulario enviado:", data);
+  const onSubmit = async (data) => {
+    const formattedData = {
+      ...data,
+      pin: data.pin.toString(), // Asegurar que sea un string de 6 caracteres
+    };
+
+    console.log("Datos enviados:", formattedData); // Debug para ver qué se envía
+
+    try {
+      const response = await fetch("http://localhost:3001/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formattedData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Registro exitoso!");
+        console.log("Usuario registrado:", result);
+      } else {
+        alert("Error en el registro: " + result.error);
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+      alert("Hubo un error al conectar con el servidor.");
+    }
   };
 
   return (
@@ -137,7 +164,7 @@ export default function LoginSignup() {
                     type="date"
                     id="birthday-input"
                     className="input_form_sign d_block active_inp"
-                    {...register("birthDate", {
+                    {...register("birthdate", {
                       required: "Debes ingresar tu fecha de nacimiento",
                       validate: validateAge,
                     })}

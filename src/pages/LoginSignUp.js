@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../css/LoginSignup.css";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 
 export default function LoginSignup() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -37,14 +38,9 @@ export default function LoginSignup() {
     return value === watch("password") || "Las contraseñas no coinciden";
   };
 
-  // Función para el envío de datos
-  const onSubmit = async (data) => {
-    const formattedData = {
-      ...data,
-      pin: data.pin.toString(), // Asegurar que sea un string de 6 caracteres
-    };
-
-    console.log("Datos enviados:", formattedData); // Debug para ver qué se envía
+  // Función para el control del signup
+  const handleSignup = async (data) => {
+    const formattedData = { ...data, pin: data.pin.toString() };
 
     try {
       const response = await fetch("http://localhost:3001/users/", {
@@ -58,7 +54,7 @@ export default function LoginSignup() {
       const result = await response.json();
 
       if (response.ok) {
-        alert("Registro exitoso!");
+        alert("Registro exitoso! Inicia sesión.");
         console.log("Usuario registrado:", result);
       } else {
         alert("Error en el registro: " + result.error);
@@ -66,6 +62,47 @@ export default function LoginSignup() {
     } catch (error) {
       console.error("Error en la solicitud:", error);
       alert("Hubo un error al conectar con el servidor.");
+    }
+  };
+
+  let navigate = useNavigate();
+
+  // Función para el control del login
+  const handleLogin = async (data) => {
+    try {
+      const response = await fetch("http://localhost:3001/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Iniciado sesión correctamente");
+
+        localStorage.setItem("token", result.token);
+        localStorage.setItem("user", JSON.stringify(result.user));
+
+        console.log("Usuario autenticado:", result.user.email);
+        navigate("/dashboard");
+      } else {
+        alert("Error en el inicio de sesión: " + result.error);
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+      alert("Hubo un error al conectar con el servidor.");
+    }
+  };
+
+  // Función para el envío de datos
+  const onSubmit = async (data) => {
+    if (isSignUp) {
+      await handleSignup(data);
+    } else {
+      await handleLogin(data);
     }
   };
 

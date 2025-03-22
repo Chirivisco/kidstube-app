@@ -41,13 +41,16 @@
     width: 100%;
   }
   
+  .ul_tabs {
+    padding: 0px;
+  }
+
   .ul_tabs > li { 
   position: relative;
     float: left;
     width: 50%;
     list-style: none;
     text-align: center;
-  
   }
   
   .ul_tabs > li > a  {  

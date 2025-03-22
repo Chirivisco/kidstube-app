@@ -1,14 +1,14 @@
 import React from "react";
-import LoginSignup from "./pages/LoginSignUp.js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+import LoginSignup from "./pages/LoginSignUp.js";
+import ProfileSelec from "./pages/Profile_selec.jsx";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LoginSignup />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile-select" element={<ProfileSelec />} />
       </Routes>
     </Router>
   );

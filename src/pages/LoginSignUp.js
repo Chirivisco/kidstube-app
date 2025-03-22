@@ -87,7 +87,7 @@ export default function LoginSignup() {
         localStorage.setItem("user", JSON.stringify(result.user));
 
         console.log("Usuario autenticado:", result.user.email);
-        navigate("/dashboard");
+        navigate("/profile-select");
       } else {
         alert("Error en el inicio de sesión: " + result.error);
       }

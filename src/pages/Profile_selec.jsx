@@ -39,7 +39,7 @@ export default function ProfileSelec() {
 
   const handleProfileSelect = (profile) => {
     localStorage.setItem("selectedProfile", JSON.stringify(profile));
-    navigate("/home");
+    navigate("/main-dashboard");
   };
 
   return (

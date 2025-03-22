@@ -1,0 +1,36 @@
+.dashboard-container {
+    background-color: #111;
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .card {
+    background-color: #222;
+    color: white;
+    border: none;
+  }
+  
+  .card-header {
+    background-color: #333;
+    color: white;
+    font-weight: bold;
+    margin-top: 10px;
+    padding: 0px 45%;
+  }
+  
+  .list-group-item {
+    background-color: #222;
+    color: white;
+    border-color: #444;
+    gap: 12px;
+  }
+  
+  .btn {
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .btn:hover {
+    transform: scale(1.05);
+  }
+  

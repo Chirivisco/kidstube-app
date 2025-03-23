@@ -1,36 +1,91 @@
 .dashboard-container {
-    background-color: #111;
-    color: white;
-    min-height: 100vh;
-    padding: 20px;
-  }
-  
-  .card {
-    background-color: #222;
-    color: white;
-    border: none;
-  }
-  
-  .card-header {
-    background-color: #333;
-    color: white;
-    font-weight: bold;
-    margin-top: 10px;
-    padding: 0px 45%;
-  }
-  
-  .list-group-item {
-    background-color: #222;
-    color: white;
-    border-color: #444;
-    gap: 12px;
-  }
-  
-  .btn {
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .btn:hover {
-    transform: scale(1.05);
-  }
-  
+  background: linear-gradient(135deg, #1e1e2e, #2a2a40);
+  color: white;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.header-container {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 15px 15px 0 0;
+}
+
+.list-group-item {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.list-group-item:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn {
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+.text-center button {
+  font-size: 1.2rem;
+  padding: 12px 20px;
+  border-radius: 10px;
+}
+
+.playlist-card {
+  margin: 10px;
+  padding: 20px;
+}
+
+.profile-item {
+  gap:25px
+}
+
+.btn-sm{
+  padding: 5px;
+}
+.btn-success {
+  margin: 10px;
+}
+.btn-primary{
+  margin: 10px;
+}
+.dashboard-title{
+  margin: 0px;
+}

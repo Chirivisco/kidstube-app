@@ -2,14 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/Main_profile_dashboard.css";
+import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 
 export default function MainProfileDashboard() {
+    // Estado para almacenar los perfiles y playlists obtenidos del servidor
     const [profiles, setProfiles] = useState([]);
     const [playlists, setPlaylists] = useState([]);
     const navigate = useNavigate();
 
+    // Obtiene el perfil seleccionado del almacenamiento local
     const selectedProfile = JSON.parse(localStorage.getItem("selectedProfile"));
 
+    // Efecto para obtener los datos del dashboard al cargar el componente
     useEffect(() => {
         if (!selectedProfile) {
             navigate("/profile-select");
@@ -17,7 +21,7 @@ export default function MainProfileDashboard() {
         }
 
         if (selectedProfile.role !== "main") {
-            navigate("/home");
+            navigate("/");
             return;
         }
 
@@ -32,6 +36,7 @@ export default function MainProfileDashboard() {
             }
 
             try {
+                // Realiza la solicitud al servidor para obtener los perfiles del usuario
                 const profilesResponse = await fetch(
                     `http://localhost:3001/profiles/user/${userId}`,
                     { headers: { Authorization: `Bearer ${token}` } }
@@ -42,6 +47,7 @@ export default function MainProfileDashboard() {
                     console.error("Error al obtener perfiles");
                 }
 
+                // Realiza la solicitud al servidor para obtener las playlists del usuario
                 const playlistsResponse = await fetch(
                     `http://localhost:3001/playlists/user/${userId}`,
                     { headers: { Authorization: `Bearer ${token}` } }
@@ -59,11 +65,13 @@ export default function MainProfileDashboard() {
         fetchDashboardData();
     }, [navigate, selectedProfile]);
 
+    // Maneja la salida del perfil seleccionado
     const handleExitProfile = () => {
         localStorage.removeItem("selectedProfile");
         navigate("/profile-select");
     };
 
+    // Maneja el cierre de sesión del usuario
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -71,6 +79,7 @@ export default function MainProfileDashboard() {
         navigate("/");
     };
 
+    // Maneja la eliminación de un perfil
     const handleDeleteProfile = async (profileId) => {
         const confirmDelete = window.confirm("¿Estás seguro de eliminar este perfil?");
         if (!confirmDelete) return;
@@ -95,17 +104,20 @@ export default function MainProfileDashboard() {
 
     return (
         <div className="container-fluid dashboard-container">
-            <div className="d-flex justify-content-between align-items-center mx-2 my-4 header-container">
-                <h1 className="dashboard-title mx-3">Bienvenido, {selectedProfile?.fullName}!</h1>
-                <div className="mx-0">
-                    <button className="btn btn-warning me-2" onClick={handleExitProfile}>
-                        🚪 Salir del Perfil
-                    </button>
-                    <button className="btn btn-danger" onClick={handleLogout}>
-                        🔒 Cerrar Sesión
-                    </button>
-                </div>
-            </div>
+            <Navbar expand="lg" className="header-container">
+                <Navbar.Brand className="dashboard-title mx-3">
+                    Bienvenido, {selectedProfile?.fullName}!
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="ms-auto" id="navigation-bar">
+                        <NavDropdown title="⚙️ Opciones" id="basic-nav-dropdown">
+                            <NavDropdown.Item onClick={handleExitProfile}>🚪 Salir del Perfil</NavDropdown.Item>
+                            <NavDropdown.Item onClick={handleLogout}>🔒 Cerrar Sesión</NavDropdown.Item>
+                        </NavDropdown>
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
 
             <div className="row">
                 <div className="col-md-6">
@@ -144,7 +156,7 @@ export default function MainProfileDashboard() {
                         </div>
                     </div>
                     <button className="btn btn-success me-2" onClick={() => navigate("/Profile_data")}>
-                        ➕ Agregar Perfil
+                        ➕ Agregar Perfil 
                     </button>
                 </div>
 
@@ -167,10 +179,6 @@ export default function MainProfileDashboard() {
                     </div>
                     <button className="btn btn-primary">🎵 Crear Playlist</button>
                 </div>
-            </div>
-
-            <div className="text-center mt-4">
-                <button className="btn btn-primary">🎵 Crear Playlist</button>
             </div>
         </div>
     );

@@ -1,143 +1,68 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../css/Profile_data.css";
+import "../css/Profile_selec.css";
 
-export default function ProfileData() {
-  // Hooks de navegación y ubicación de React Router
+export default function ProfileSelec() {
+  const [profiles, setProfiles] = useState([]);
   const navigate = useNavigate();
-  const location = useLocation();
-  const profileToEdit = location.state?.profile || null;
 
-  // Estados para manejar los datos del formulario y errores
-  const [fullName, setFullName] = useState(profileToEdit?.fullName || "");
-  const [pin, setPin] = useState(profileToEdit?.pin || "");
-  const [avatarUrl, setAvatarUrl] = useState(profileToEdit?.avatar || "");
-  const [avatarFile, setAvatarFile] = useState(null);
-  const [error, setError] = useState("");
-
-  // Efecto para verificar si el usuario está autenticado
   useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      navigate("/");
-    }
+    const fetchProfiles = async () => {
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      const userId = user?.id;
+
+      if (!token || !userId) {
+        navigate("/");
+        return;
+      }
+      try {
+        const response = await fetch(
+          `http://localhost:3001/profiles/user/${userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setProfiles(data);
+        } else {
+          console.error("Error al obtener perfiles");
+        }
+      } catch (error) {
+        console.error("Error de conexión", error);
+      }
+    };
+    fetchProfiles();
   }, [navigate]);
 
-  // Maneja el cambio de archivo para el avatar
-  const handleFileChange = (e) => {
-    setAvatarFile(e.target.files[0]);
-    setAvatarUrl(""); // Borra la URL si el usuario sube un archivo
-  };
-
-  // Maneja el envío del formulario
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validación del PIN
-    if (pin.length !== 6 || isNaN(pin)) {
-      setError("El PIN debe ser un número de 6 dígitos.");
-      return;
-    }
-
-    const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
-    const userId = user?.id;
-
-    // Verificación de token y userId
-    if (!token || !userId) {
-      navigate("/");
-      return;
-    }
-
-    // Creación del FormData para enviar al servidor
-    const formData = new FormData();
-    formData.append("fullName", fullName);
-    formData.append("pin", pin);
-    formData.append("userId", userId);
-
-    if (avatarFile) {
-      formData.append("avatar", avatarFile);
-    } else {
-      formData.append("avatar", avatarUrl);
-    }
-
-    try {
-      // Determina la URL y el método HTTP según si se está editando o creando un perfil
-      const url = profileToEdit
-        ? `http://localhost:3001/profiles/${profileToEdit._id}`
-        : "http://localhost:3001/profiles";
-      const method = profileToEdit ? "PATCH" : "POST";
-
-      // Realiza la solicitud al servidor
-      const response = await fetch(url, {
-        method,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      // Manejo de la respuesta del servidor
-      if (response.ok) {
-        navigate("/main-dashboard");
-      } else {
-        setError("Error al guardar el perfil.");
-      }
-    } catch (error) {
-      setError("Error de conexión con el servidor.");
-    }
+  const handleProfileSelect = (profile) => {
+    localStorage.setItem("selectedProfile", JSON.stringify(profile));
+    navigate("/main-dashboard");
   };
 
   return (
-    <div className="container profile-form-container">
-      <h2 className="text-center">{profileToEdit ? "Editar Perfil" : "Crear Perfil"}</h2>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <form onSubmit={handleSubmit} className="profile-form">
-        <div className="mb-3">
-          <label className="form-label">Nombre Completo</label>
-          <input
-            type="text"
-            className="form-control"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">PIN (6 dígitos)</label>
-          <input
-            type="password"
-            className="form-control"
-            value={pin}
-            onChange={(e) => setPin(e.target.value)}
-            required
-            maxLength="6"
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Avatar (URL)</label>
-          <input
-            type="text"
-            className="form-control"
-            value={avatarUrl}
-            onChange={(e) => setAvatarUrl(e.target.value)}
-            disabled={avatarFile !== null}
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Subir Avatar</label>
-          <input
-            type="file"
-            className="form-control"
-            accept="image/*"
-            onChange={handleFileChange}
-            disabled={avatarUrl !== ""}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary w-100">
-          {profileToEdit ? "Guardar Cambios" : "Crear Perfil"}
-        </button>
-      </form>
+    <div className="container-fluid profile-container">
+      <h1 className="text-center">¿Quién está viendo?</h1>
+      <div className="row justify-content-center">
+        {profiles.map((profile) => (
+          <div key={profile._id} className="profile-wrapper">
+            <div
+              className="col-6 col-md-3 profile-card"
+              onClick={() => handleProfileSelect(profile)}
+            >
+              <img
+                src={`http://localhost:3001/${profile.avatar}`}
+                alt={profile.fullName}
+                className="profile-avatar"
+              />
+              <h2 className="profile-name">{profile.fullName}</h2>
+              <button className="btn btn-primary">Entrar</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

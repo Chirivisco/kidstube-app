@@ -4,7 +4,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/Profile_selec.css";
 
 export default function ProfileSelec() {
-  const [profiles, setProfiles] = useState([]);
+  const [profiles, setProfiles] = useState([]); // Lista de perfiles
+  const [selectedProfileId, setSelectedProfileId] = useState(null); // ID del perfil seleccionado
+  const [pin, setPin] = useState(""); // PIN ingresado por el usuario
+  const [errorMessage, setErrorMessage] = useState(""); // Mensaje de error para el PIN
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,9 +40,22 @@ export default function ProfileSelec() {
     fetchProfiles();
   }, [navigate]);
 
-  const handleProfileSelect = (profile) => {
-    localStorage.setItem("selectedProfile", JSON.stringify(profile));
-    navigate("/main-dashboard");
+  const handleProfileSelect = (profileId) => {
+    // Establece el perfil seleccionado y reinicia el PIN y el mensaje de error
+    setSelectedProfileId(profileId);
+    setPin("");
+    setErrorMessage("");
+  };
+
+  const handlePinSubmit = (profile) => {
+    if (pin === profile.pin) {
+      // Si el PIN es correcto, guarda el perfil seleccionado y navega al dashboard
+      localStorage.setItem("selectedProfile", JSON.stringify(profile));
+      navigate("/main-dashboard");
+    } else {
+      // Si el PIN es incorrecto, muestra un mensaje de error
+      setErrorMessage("PIN incorrecto. Inténtalo de nuevo.");
+    }
   };
 
   return (
@@ -50,7 +66,7 @@ export default function ProfileSelec() {
           <div key={profile._id} className="profile-wrapper">
             <div
               className="col-6 col-md-3 profile-card"
-              onClick={() => handleProfileSelect(profile)}
+              onClick={() => handleProfileSelect(profile._id)}
             >
               <img
                 src={
@@ -61,10 +77,31 @@ export default function ProfileSelec() {
                 alt={profile.fullName}
                 className="profile-avatar"
               />
-
               <h2 className="profile-name">{profile.fullName}</h2>
-              <button className="btn btn-primary">Entrar</button>
             </div>
+
+            {/* Mostrar el input del PIN si este perfil está seleccionado */}
+            {selectedProfileId === profile._id && (
+              <div className="pin-input-container">
+                <input
+                  type="password"
+                  className="form-control pin-input"
+                  placeholder="Ingresa tu PIN"
+                  maxLength={6}
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value)}
+                />
+                <button
+                  className="btn btn-primary mt-2"
+                  onClick={() => handlePinSubmit(profile)}
+                >
+                  Entrar
+                </button>
+                {errorMessage && (
+                  <p className="text-danger mt-2">{errorMessage}</p>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>

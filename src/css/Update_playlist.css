@@ -1,3 +1,224 @@
-div.form-check label {
-  color: #000000;
+/* Estilos generales */
+body {
+  background-color: #121212;  /* Fondo oscuro */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #f5f5f5;  /* Texto blanco para contraste */
+}
+
+.update-playlist-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.update-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #f5f5f5;  /* Blanco */
+  margin-bottom: 30px;
+}
+
+.update-card,
+.profiles-card,
+.add-video-card {
+  background-color: #1e1e1e;  /* Fondo oscuro */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-bottom: 30px;
+  padding: 20px;
+}
+
+.profiles-title,
+.videos-title,
+.add-video-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #f5f5f5;  /* Blanco */
+  margin-bottom: 15px;
+}
+
+.form-control {
+  border-radius: 8px;
+  background-color: #333333;  /* Fondo oscuro para inputs */
+  color: #f5f5f5;  /* Texto blanco */
+  border: 1px solid #444444;  /* Borde oscuro */
+}
+
+.form-control:focus {
+  border-color: #1e90ff;  /* Borde azul cuando se selecciona */
+  box-shadow: 0 0 5px rgba(30, 144, 255, 0.5);  /* Sombra azul */
+}
+
+button {
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+/* Estilos para los botones */
+button.primary-btn {
+  background-color: #1e90ff;
+  color: white;
+  border: none;
+}
+
+button.primary-btn:hover {
+  background-color: #4682b4;
+}
+
+button.danger-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+button.danger-btn:hover {
+  background-color: #c82333;
+}
+
+button.info-btn {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+}
+
+button.info-btn:hover {
+  background-color: #138496;
+}
+
+button.success-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+button.success-btn:hover {
+  background-color: #218838;
+}
+
+/* Estilos para las tarjetas de video */
+.accordion-item {
+  border-radius: 8px;
+  margin-bottom: 15px;
+  background-color: #2c2c2c;  /* Fondo oscuro para las tarjetas */
+}
+
+.accordion-button {
+  background-color: #2c2c2c;  /* Fondo oscuro */
+  border-radius: 8px;
+  color: #f5f5f5;  /* Texto blanco */
+  font-weight: 500;
+  text-align: left;
+  padding: 1rem;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #444444;  /* Fondo más claro cuando está expandido */
+}
+
+.accordion-body {
+  padding: 20px;
+  font-size: 1rem;
+  color: #f5f5f5;  /* Blanco */
+  background-color: #333333;  /* Fondo oscuro */
+  border-radius: 8px;
+}
+
+.accordion-header {
+  font-weight: 600;
+  color: #f5f5f5;  /* Blanco */
+}
+
+/* Estilos para el formulario de video */
+.add-video-card .form-control {
+  margin-bottom: 15px;
+}
+
+/* Estilos del Toast */
+.toast-container {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+}
+
+.toast-body {
+  font-size: 1.2rem;
+  color: #f5f5f5;  /* Blanco */
+  background-color: #333333;  /* Fondo oscuro */
+}
+
+/* Perfiles asociados */
+.profiles-card {
+  background-color: #1e1e1e;  /* Fondo oscuro */
+}
+
+.profiles-card .form-check {
+  margin-bottom: 15px;
+}
+
+.profiles-card .form-check-label {
+  font-size: 1.2rem;
+  color: #f5f5f5;  /* Blanco */
+}
+
+.profiles-card .form-check-input {
+  margin-right: 10px;
+}
+
+/* Títulos y espaciado */
+h3.profiles-title,
+h3.videos-title,
+h3.add-video-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #f5f5f5;  /* Blanco */
+  margin-bottom: 20px;
+}
+
+/* Formulario de edición del nombre de la playlist */
+.update-card .form-label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #f5f5f5;  /* Blanco */
+}
+
+.update-card .form-control {
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+}
+
+/* Alineación de botones */
+button.mt-3 {
+  margin-top: 20px;
+}
+
+/* Estilos para la tabla de videos */
+.video-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.video-table th,
+.video-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.video-table th {
+  background-color: #444444;  /* Fondo más oscuro para las cabeceras */
+  font-weight: 600;
+  color: #f5f5f5;  /* Blanco */
+}
+
+.video-table tr:nth-child(even) {
+  background-color: #333333;  /* Fondo oscuro para filas pares */
+}
+
+.video-table tr:hover {
+  background-color: #555555;  /* Fondo más claro al pasar el mouse */
 }

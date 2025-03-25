@@ -17,8 +17,10 @@ h1 {
 .profile-wrapper {
   width: 250px; /* Ancho predefinido para cada tarjeta */
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* Asegura que el contenido esté en columna */
+  align-items: center; /* Centra el contenido horizontalmente */
 }
+
 
 .profile-card {
   text-align: center;
@@ -45,4 +47,28 @@ h1 {
 .profile-name {
   font-size: 1.2rem;
   margin-bottom: 10px;
+}
+
+.pin-input-container {
+  margin-top: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.pin-input {
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.btn-primary {
+  width: 100%;
+  max-width: 200px;
+  margin-top: 10px;
+}
+
+.form-control {
+  background-color: white;
 }

@@ -25,9 +25,11 @@ export default function MainProfileDashboard() {
             return;
         }
 
-        if (selectedProfile.role !== "main") {
-            navigate("/");
+        if (selectedProfile.role === "restricted") {
+            navigate("/restricted-dashboard"), { replace: true };
             return;
+        } else {
+            navigate("/");
         }
 
         const fetchDashboardData = async () => {

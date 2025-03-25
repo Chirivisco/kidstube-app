@@ -40,6 +40,7 @@ export default function ProfileData() {
     }
 
     const token = localStorage.getItem("token");
+    const tokenProfile = localStorage.getItem("token_profile")
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user?.id;
 
@@ -72,7 +73,7 @@ export default function ProfileData() {
       const response = await fetch(url, {
         method,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${tokenProfile}`,
         },
         body: formData,
       });

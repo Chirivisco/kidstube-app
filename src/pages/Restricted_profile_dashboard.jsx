@@ -67,10 +67,11 @@ const RestrictedProfileDashboard = () => {
     const fetchPlaylists = async () => {
         try {
             const token = localStorage.getItem("token");
+            const tokenProfile = localStorage.getItem("token_profile");
             const config = {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${tokenProfile}` },
             };
-            const response = await axios.get(`http://localhost:3001/api/playlists/profile/${selectedProfile._id}`, config);
+            const response = await axios.get(`http://localhost:3001/api/playlists/profile/${selectedProfile._id}`, config); // Obtiene las playlists del perfil
             setPlaylists(response.data);
         } catch (error) {
             console.error("Error al obtener las playlists", error);
@@ -85,10 +86,11 @@ const RestrictedProfileDashboard = () => {
     const fetchVideos = async (playlistId, playlistName) => {
         try {
             const token = localStorage.getItem("token");
+            const tokenProfile = localStorage.getItem("token_profile");
             const config = {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${tokenProfile}` },
             };
-            const response = await axios.get(`http://localhost:3001/api/playlists/${playlistId}/videos`, config);
+            const response = await axios.get(`http://localhost:3001/api/playlists/${playlistId}/videos`, config); // Obtiene los videos de la playlist
             setVideos(response.data);
             setSelectedPlaylistName(playlistName); // Actualiza el nombre de la playlist seleccionada
         } catch (error) {

@@ -22,9 +22,10 @@ const UpdatePlaylist = () => {
     useEffect(() => {
         const fetchPlaylist = async () => {
             const token = localStorage.getItem("token");
+            const tokenProfile = localStorage.getItem("token_profile");
             try {
                 const response = await fetch(`http://localhost:3001/api/playlists/${playlistId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { Authorization: `Bearer ${tokenProfile}` },
                 });
                 if (response.ok) {
                     const data = await response.json();
@@ -43,6 +44,7 @@ const UpdatePlaylist = () => {
 
         const fetchProfiles = async () => {
             const token = localStorage.getItem("token");
+            const tokenProfile = localStorage.getItem("token_profile");
             const user = JSON.parse(localStorage.getItem("user")); // Obtiene el usuario desde el Local Storage
             const userId = user?.id;
 
@@ -81,13 +83,14 @@ const UpdatePlaylist = () => {
 
     // Actualiza el nombre de la playlist en el servidor
     const handleUpdatePlaylist = async () => {
+        const tokenProfile = localStorage.getItem("token_profile");
         const token = localStorage.getItem("token");
         try {
             const response = await fetch(`http://localhost:3001/api/playlists/${playlistId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${tokenProfile}`,
                 },
                 body: JSON.stringify({ name: playlistName }),
             });
@@ -110,6 +113,7 @@ const UpdatePlaylist = () => {
         }
 
         const token = localStorage.getItem("token");
+        const tokenProfile = localStorage.getItem("token_profile");
 
         if (editingVideoId) {
             // Actualiza un video existente
@@ -118,7 +122,7 @@ const UpdatePlaylist = () => {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${tokenProfile}`,
                     },
                     body: JSON.stringify(newVideo),
                 });
@@ -141,7 +145,7 @@ const UpdatePlaylist = () => {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${tokenProfile}`,
                     },
                     body: JSON.stringify(newVideo),
                 });
@@ -162,12 +166,13 @@ const UpdatePlaylist = () => {
     // Actualiza los perfiles asociados a la playlist en el servidor
     const handleUpdateProfiles = async () => {
         const token = localStorage.getItem("token");
+        const tokenProfile = localStorage.getItem("token_profile");
         try {
             const response = await fetch(`http://localhost:3001/api/playlists/${playlistId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${tokenProfile}`,
                 },
                 body: JSON.stringify({ profiles: selectedProfiles }),
             });
@@ -190,10 +195,11 @@ const UpdatePlaylist = () => {
     // Elimina un video de la playlist
     const handleDeleteVideo = async (videoId) => {
         const token = localStorage.getItem("token");
+        const tokenProfile = localStorage.getItem("token_profile");
         try {
             const response = await fetch(`http://localhost:3001/api/videos/${videoId}`, {
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${tokenProfile}` },
             });
 
             if (response.ok) {

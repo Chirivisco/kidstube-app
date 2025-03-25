@@ -12,24 +12,29 @@ export default function ProfileSelec() {
 
   useEffect(() => {
     const fetchProfiles = async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token"); // Obtener el token del usuario
       const user = JSON.parse(localStorage.getItem("user"));
       const userId = user?.id;
 
       if (!token || !userId) {
-        navigate("/");
+        navigate("/"); // Si no hay token o usuario, redirige al login
         return;
       }
+
       try {
         const response = await fetch(
           `http://localhost:3001/profiles/user/${userId}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`, // Usar el token del usuario
+            },
           }
         );
+
         if (response.ok) {
           const data = await response.json();
-          setProfiles(data);
+          setProfiles(data); // Guardar los perfiles obtenidos
         } else {
           console.error("Error al obtener perfiles");
         }
@@ -37,7 +42,8 @@ export default function ProfileSelec() {
         console.error("Error de conexión", error);
       }
     };
-    fetchProfiles();
+
+    fetchProfiles(); // Llamar la función para obtener los perfiles
   }, [navigate]);
 
   const handleProfileSelect = (profileId) => {
@@ -47,11 +53,41 @@ export default function ProfileSelec() {
     setErrorMessage("");
   };
 
-  const handlePinSubmit = (profile) => {
+  const handlePinSubmit = async (profile) => {
     if (pin === profile.pin) {
-      // Si el PIN es correcto, guarda el perfil seleccionado y navega al dashboard
-      localStorage.setItem("selectedProfile", JSON.stringify(profile));
-      navigate("/main-dashboard");
+      // Si el PIN es correcto, guarda el perfil seleccionado
+
+      // Ahora hacemos la llamada para obtener el token de perfil
+      const token = localStorage.getItem("token"); // Obtener el token del usuario
+      try {
+        const response = await fetch("http://localhost:3001/profiles/select-profile", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`, // Mandamos el token del usuario
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ profileId: profile._id }), // Enviamos el ID del perfil seleccionado
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const tokenProfile = data.token_profile; // Suponiendo que el token de perfil se devuelve aquí
+
+          // Guardamos el token de perfil en localStorage
+          localStorage.setItem("token_profile", tokenProfile);
+
+          // También guardamos el perfil seleccionado en el localStorage
+          localStorage.setItem("selectedProfile", JSON.stringify(profile));
+
+          // Navegamos al dashboard
+          navigate("/main-dashboard");
+        } else {
+          setErrorMessage("Hubo un error al seleccionar el perfil. Inténtalo de nuevo.");
+        }
+      } catch (error) {
+        console.error("Error al seleccionar el perfil", error);
+        setErrorMessage("Hubo un error al seleccionar el perfil. Inténtalo de nuevo.");
+      }
     } else {
       // Si el PIN es incorrecto, muestra un mensaje de error
       setErrorMessage("PIN incorrecto. Inténtalo de nuevo.");
@@ -93,7 +129,7 @@ export default function ProfileSelec() {
                 />
                 <button
                   className="btn btn-primary mt-2"
-                  onClick={() => handlePinSubmit(profile)}
+                  onClick={() => handlePinSubmit(profile)} // Llamar a handlePinSubmit para seleccionar el perfil
                 >
                   Entrar
                 </button>

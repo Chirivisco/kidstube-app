@@ -8,6 +8,7 @@ export default function MainProfileDashboard() {
     // Estado para almacenar los perfiles y playlists obtenidos del servidor
     const [profiles, setProfiles] = useState([]);
     const [playlists, setPlaylists] = useState([]);
+    const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [newPlaylistName, setNewPlaylistName] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -32,10 +33,12 @@ export default function MainProfileDashboard() {
 
         const fetchDashboardData = async () => {
             const token = localStorage.getItem("token");
+            const tokenProfile = localStorage.getItem("token_profile");
             const user = JSON.parse(localStorage.getItem("user"));
             const userId = user?.id;
 
-            if (!token || !userId) {
+            if (!token || !userId || !tokenProfile) {
+                setError("No se encontró un token válido.");
                 navigate("/");
                 return;
             }
@@ -58,12 +61,18 @@ export default function MainProfileDashboard() {
                 // Realiza la solicitud al servidor para obtener las playlists del usuario
                 const playlistsResponse = await fetch(
                     `http://localhost:3001/api/playlists/user/${userId}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    {
+                        method: "GET",
+                        headers: { Authorization: `Bearer ${tokenProfile}` },
+                    }
                 );
+
                 if (playlistsResponse.ok) {
-                    setPlaylists(await playlistsResponse.json());
+                    const data = await playlistsResponse.json();
+                    setPlaylists(data);
                 } else {
-                    console.error("Error al obtener playlists");
+                    setError("Error al obtener playlists");
+                    console.error("Error al obtener playlists", playlistsResponse);
                 }
             } catch (error) {
                 console.error("Error de conexión", error);
@@ -91,6 +100,7 @@ export default function MainProfileDashboard() {
     // Maneja la eliminación de un perfil
     const handleDeleteProfile = async (profileId) => {
         const confirmDelete = window.confirm("¿Estás seguro de eliminar este perfil?");
+        const tokenProfile = localStorage.getItem("token_profile");
         if (!confirmDelete) return;
 
         const token = localStorage.getItem("token");
@@ -98,7 +108,7 @@ export default function MainProfileDashboard() {
         try {
             const response = await fetch(`http://localhost:3001/profiles/${profileId}`, {
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${tokenProfile}` },
             });
 
             if (response.ok) {
@@ -119,14 +129,16 @@ export default function MainProfileDashboard() {
         }
 
         setErrorMessage("");
+        console.log("Enviando datos al backend:", {
+            name: newPlaylistName,
+            profiles: selectedProfiles
+        });
 
         try {
+            const tokenProfile = localStorage.getItem("token_profile");
             const response = await fetch("http://localhost:3001/api/playlists", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: {Authorization: `Bearer ${tokenProfile}`, "Content-Type": "application/json"},
                 body: JSON.stringify({
                     name: newPlaylistName,
                     profiles: selectedProfiles,
@@ -150,12 +162,13 @@ export default function MainProfileDashboard() {
     // Maneja la eliminación de una playlist
     const handleDeletePlaylist = async (playlistId) => {
         const confirmDelete = window.confirm("¿Estás seguro de eliminar esta playlist?");
+        const tokenProfile = localStorage.getItem("token_profile");
         if (!confirmDelete) return;
 
         try {
             const response = await fetch(`http://localhost:3001/api/playlists/${playlistId}`, {
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${tokenProfile}` },
             });
 
             if (response.ok) {

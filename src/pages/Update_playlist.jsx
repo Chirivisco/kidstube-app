@@ -4,17 +4,21 @@ import { Form, Button, Card, Accordion, Toast, ToastContainer, Row, Col } from "
 import "../css/Update_playlist.css";
 
 const UpdatePlaylist = () => {
-    const { playlistId } = useParams();
-    const navigate = useNavigate();
+    const { playlistId } = useParams(); // Obtiene el ID de la playlist desde la URL
+    const navigate = useNavigate(); // Hook para navegar entre rutas
 
-    const [playlist, setPlaylist] = useState(null);
-    const [playlistName, setPlaylistName] = useState("");
-    const [videos, setVideos] = useState([]);
-    const [newVideo, setNewVideo] = useState({ name: "", url: "", description: "" });
-    const [editingVideoId, setEditingVideoId] = useState(null); // Nuevo estado para el ID del video en edición
-    const [showToast, setShowToast] = useState(false);
-    const [toastMessage, setToastMessage] = useState("");
+    // Estados para manejar los datos de la playlist, videos, perfiles y notificaciones
+    const [playlist, setPlaylist] = useState(null); // Datos de la playlist actual
+    const [playlistName, setPlaylistName] = useState(""); // Nombre de la playlist
+    const [videos, setVideos] = useState([]); // Lista de videos en la playlist
+    const [newVideo, setNewVideo] = useState({ name: "", url: "", description: "" }); // Datos del video a agregar o editar
+    const [editingVideoId, setEditingVideoId] = useState(null); // ID del video que se está editando
+    const [selectedProfiles, setSelectedProfiles] = useState([]); // IDs de los perfiles asociados a la playlist
+    const [allProfiles, setAllProfiles] = useState([]); // Lista de todos los perfiles disponibles
+    const [showToast, setShowToast] = useState(false); // Controla la visibilidad del Toast
+    const [toastMessage, setToastMessage] = useState(""); // Mensaje a mostrar en el Toast
 
+    // Efecto para cargar los datos de la playlist y los perfiles al montar el componente
     useEffect(() => {
         const fetchPlaylist = async () => {
             const token = localStorage.getItem("token");
@@ -24,18 +28,58 @@ const UpdatePlaylist = () => {
                 });
                 if (response.ok) {
                     const data = await response.json();
+                    console.log("Playlist cargada:", data); // Log para verificar los datos de la playlist
                     setPlaylist(data);
                     setPlaylistName(data.name);
                     setVideos(data.videos);
+                    setSelectedProfiles(data.profiles.map((profile) => profile._id)); // Inicializa los perfiles seleccionados
+                } else {
+                    console.error("Error al obtener la playlist:", response.statusText);
                 }
             } catch (error) {
                 console.error("Error al obtener la playlist", error);
             }
         };
 
-        fetchPlaylist();
+        const fetchProfiles = async () => {
+            const token = localStorage.getItem("token");
+            const user = JSON.parse(localStorage.getItem("user")); // Obtiene el usuario desde el Local Storage
+            const userId = user?.id;
+
+            if (!userId) {
+                console.error("No se encontró el ID del usuario.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3001/profiles/user/${userId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (response.ok) {
+                    const profiles = await response.json();
+                    console.log("Perfiles cargados:", profiles); // Log para verificar los perfiles cargados
+                    setAllProfiles(profiles);
+                } else {
+                    console.error("Error al obtener los perfiles:", response.statusText);
+                }
+            } catch (error) {
+                console.error("Error al obtener los perfiles", error);
+            }
+        };
+
+        fetchPlaylist(); // Carga los datos de la playlist
+        fetchProfiles(); // Carga los perfiles disponibles
     }, [playlistId]);
 
+    // Efecto para actualizar los perfiles seleccionados cuando se cargan los datos de la playlist o los perfiles
+    useEffect(() => {
+        if (playlist && allProfiles.length > 0) {
+            const profileIds = playlist.profiles; // IDs de los perfiles asociados a la playlist
+            setSelectedProfiles(profileIds); // Establece los perfiles seleccionados
+        }
+    }, [playlist, allProfiles]);
+
+    // Actualiza el nombre de la playlist en el servidor
     const handleUpdatePlaylist = async () => {
         const token = localStorage.getItem("token");
         try {
@@ -57,6 +101,7 @@ const UpdatePlaylist = () => {
         }
     };
 
+    // Agrega o actualiza un video en la playlist
     const handleAddOrUpdateVideo = async () => {
         if (!newVideo.name.trim() || !newVideo.url.trim() || !newVideo.description.trim()) {
             setToastMessage("Todos los campos son obligatorios.");
@@ -67,7 +112,7 @@ const UpdatePlaylist = () => {
         const token = localStorage.getItem("token");
 
         if (editingVideoId) {
-            // Actualizar un video existente
+            // Actualiza un video existente
             try {
                 const response = await fetch(`http://localhost:3001/api/videos/${editingVideoId}`, {
                     method: "PATCH",
@@ -90,7 +135,7 @@ const UpdatePlaylist = () => {
                 console.error("Error al actualizar el video", error);
             }
         } else {
-            // Agregar un nuevo video
+            // Agrega un nuevo video
             try {
                 const response = await fetch(`http://localhost:3001/api/playlists/${playlistId}/videos`, {
                     method: "POST",
@@ -114,11 +159,35 @@ const UpdatePlaylist = () => {
         }
     };
 
+    // Actualiza los perfiles asociados a la playlist en el servidor
+    const handleUpdateProfiles = async () => {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch(`http://localhost:3001/api/playlists/${playlistId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ profiles: selectedProfiles }),
+            });
+
+            if (response.ok) {
+                setToastMessage("Perfiles actualizados con éxito.");
+                setShowToast(true);
+            }
+        } catch (error) {
+            console.error("Error al actualizar los perfiles", error);
+        }
+    };
+
+    // Carga los datos de un video en el formulario para editarlo
     const handleEditVideo = (video) => {
         setNewVideo({ name: video.name, url: video.url, description: video.description });
         setEditingVideoId(video._id);
     };
 
+    // Elimina un video de la playlist
     const handleDeleteVideo = async (videoId) => {
         const token = localStorage.getItem("token");
         try {
@@ -141,6 +210,11 @@ const UpdatePlaylist = () => {
         <div className="update-playlist-container">
             <h2 className="update-title">Editar Playlist</h2>
 
+            {/* Botón para regresar */}
+            <Button variant="secondary" onClick={() => navigate("/main-dashboard")} className="mb-3">
+                Regresar al Dashboard
+            </Button>
+
             {/* Notificación Toast */}
             <ToastContainer position="top-end" className="p-3">
                 <Toast show={showToast} onClose={() => setShowToast(false)} delay={3000} autohide>
@@ -148,6 +222,7 @@ const UpdatePlaylist = () => {
                 </Toast>
             </ToastContainer>
 
+            {/* Formulario para editar el nombre de la playlist */}
             <Card className="update-card">
                 <Card.Body>
                     <Form>
@@ -164,8 +239,38 @@ const UpdatePlaylist = () => {
                 </Card.Body>
             </Card>
 
-            <h3 className="videos-title">Videos en la Playlist</h3>
+            {/* Formulario para editar los perfiles asociados */}
+            <h3 className="profiles-title">Perfiles Asociados</h3>
+            <Card className="profiles-card">
+                <Card.Body>
+                    <Form>
+                        {allProfiles.map((profile) => (
+                            <Form.Check
+                                key={profile._id}
+                                type="checkbox"
+                                label={profile.fullName}
+                                checked={selectedProfiles.includes(profile._id)} // Comparar solo por el ID
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        // Agregar el perfil a la lista de seleccionados
+                                        setSelectedProfiles((prev) => [...prev, profile._id]);
+                                    } else {
+                                        // Eliminar el perfil de la lista de seleccionados
+                                        setSelectedProfiles((prev) => prev.filter((id) => id !== profile._id));
+                                    }
+                                }}
+                            />
+                        ))}
 
+                        <Button variant="primary" onClick={handleUpdateProfiles} className="mt-3">
+                            Guardar Perfiles
+                        </Button>
+                    </Form>
+                </Card.Body>
+            </Card>
+
+            {/* Lista de videos en la playlist */}
+            <h3 className="videos-title">Videos en la Playlist</h3>
             <Accordion>
                 {videos.map((video, index) => (
                     <Accordion.Item eventKey={index.toString()} key={video._id}>
@@ -180,6 +285,7 @@ const UpdatePlaylist = () => {
                 ))}
             </Accordion>
 
+            {/* Formulario para agregar o editar un video */}
             <h3 className="add-video-title">{editingVideoId ? "Editar Video" : "Agregar Nuevo Video"}</h3>
             <Card className="add-video-card">
                 <Card.Body>

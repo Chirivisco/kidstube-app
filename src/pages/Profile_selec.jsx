@@ -53,10 +53,15 @@ export default function ProfileSelec() {
               onClick={() => handleProfileSelect(profile)}
             >
               <img
-                src={`http://localhost:3001/${profile.avatar}`}
+                src={
+                  profile.avatar.startsWith("http")
+                    ? profile.avatar
+                    : `http://localhost:3001/${profile.avatar.replace(/\\/g, "/").replace(/^\/?/, "")}`
+                }
                 alt={profile.fullName}
                 className="profile-avatar"
               />
+
               <h2 className="profile-name">{profile.fullName}</h2>
               <button className="btn btn-primary">Entrar</button>
             </div>

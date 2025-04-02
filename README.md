@@ -1,70 +1,138 @@
-# Getting Started with Create React App
+# 🎥 KidsTube App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)](https://reactrouter.com/)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
+[![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)](https://axios-http.com/)
+[![License](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
-## Available Scripts
+## 📝 Descripción
 
-In the project directory, you can run:
+KidsTube App es la interfaz de usuario de una plataforma que permite a los padres controlar el contenido que sus hijos pueden ver. La aplicación proporciona una interfaz intuitiva para gestionar perfiles, videos y playlists, con un diseño amigable para niños.
 
-### `npm start`
+### 🎯 Características Principales
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- 👥 Sistema de perfiles múltiples
+- 📺 Reproductor de video integrado
+- 📋 Gestión de playlists
+- 🎨 Interfaz amigable para niños
+- 🔒 Sistema de autenticación seguro
+- 📱 Diseño responsive
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Tecnologías Utilizadas
 
-### `npm test`
+- **React.js** - Biblioteca de UI
+- **React Router** - Navegación
+- **React Bootstrap** - Componentes UI
+- **Axios** - Cliente HTTP
+- **React Hook Form** - Gestión de formularios
+- **Shadcn UI** - Componentes adicionales
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 📁 Estructura del Proyecto
 
-### `npm run build`
+```
+├── public/          # 🌐 Archivos estáticos
+├── src/
+│   ├── pages/      # 📄 Componentes de página
+│   ├── css/        # 🎨 Estilos CSS
+│   ├── Middleware/ # 🔄 Middleware de la aplicación
+│   ├── App.js      # 🚀 Componente principal
+│   └── index.js    # ⚡ Punto de entrada
+└── package.json    # 📦 Dependencias y scripts
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ⚙️ Requisitos Previos
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Node.js (versión 14 o superior)
+- npm o yarn
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🚀 Instalación
 
-### `npm run eject`
+1. **Clonar el repositorio:**
+```bash
+git clone https://github.com/Chirivisco/kidstube-app.git
+cd kidstube-app
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. **Instalar dependencias:**
+```bash
+npm install
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. **Iniciar la aplicación:**
+```bash
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📱 Páginas Principales
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🔐 Autenticación
+- **LoginSignUp**: Página de inicio de sesión y registro
+  - Formulario de registro
+  - Formulario de inicio de sesión
+  - Validación de datos
 
-## Learn More
+### 👥 Perfiles
+- **Profile_selec**: Selección de perfil
+  - Lista de perfiles disponibles
+  - Creación de nuevo perfil
+  - Selección de tipo de perfil
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- **Main_profile_dashboard**: Dashboard principal
+  - Vista general de contenido
+  - Acceso rápido a videos
+  - Gestión de preferencias
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **Restricted_profile_dashboard**: Dashboard para perfiles restringidos
+  - Contenido limitado
+  - Interfaz simplificada
+  - Controles parentales
 
-### Code Splitting
+- **Profile_data**: Gestión de datos de perfil
+  - Edición de información
+  - Configuración de preferencias
+  - Gestión de seguridad
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 📺 Gestión de Contenido
+- **Update_playlist**: Gestión de playlists
+  - Creación de playlists
+  - Edición de contenido
+  - Organización de videos
 
-### Analyzing the Bundle Size
+## 🎨 Características de UI/UX
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- 🎯 Diseño intuitivo y amigable
+- 📱 Interfaz responsive
+- 🎨 Tema adaptado para niños
+- ⚡ Navegación fluida
+- 🔍 Búsqueda eficiente
+- 🎮 Controles simplificados
 
-### Making a Progressive Web App
+## 🔒 Seguridad
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- 🔐 Integración con JWT
+- 🛡️ Protección de rutas
+- 🔑 Manejo seguro de datos
+- 👤 Validación de permisos
 
-### Advanced Configuration
+## 🤝 Contribución
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. Fork el proyecto
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request
 
-### Deployment
+## 📄 Licencia
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Este proyecto está bajo la Licencia ISC. Ver el archivo [LICENSE](LICENSE) para más detalles.
 
-### `npm run build` fails to minify
+## 👥 Autores
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- **Chirivisco** - *Trabajo Inicial* - [Chirivisco](https://github.com/Chirivisco)
+
+## 🙏 Agradecimientos
+
+- React por su excelente biblioteca de UI
+- Bootstrap por sus componentes estilizados
+- La comunidad de React por sus valiosas herramientas

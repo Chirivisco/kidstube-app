@@ -3,6 +3,8 @@ import { useNavigate } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/Main_profile_dashboard.css";
 import { Navbar, Nav, NavDropdown, Modal, Button, Form } from "react-bootstrap";
+import { FaUserCircle, FaCog, FaSignOutAlt, FaEdit, FaTrash, FaList, FaMusic, FaUsers } from "react-icons/fa";
+import { Dropdown } from "react-bootstrap";
 
 export default function MainProfileDashboard() {
     // Estado para almacenar los perfiles y playlists obtenidos del servidor
@@ -182,138 +184,143 @@ export default function MainProfileDashboard() {
     };
 
     return (
-        <div className="container-fluid dashboard-container">
-            <Navbar expand="lg" className="header-container">
-                <Navbar.Brand className="dashboard-title mx-3">
-                    Bienvenido, {selectedProfile?.fullName}!
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="ms-auto" id="navigation-bar">
-                        <NavDropdown title="⚙️ Opciones" id="basic-nav-dropdown">
-                            <NavDropdown.Item onClick={handleExitProfile}>🚪 Salir del Perfil</NavDropdown.Item>
-                            <NavDropdown.Item onClick={handleLogout}>🔒 Cerrar Sesión</NavDropdown.Item>
-                        </NavDropdown>
-                    </Nav>
-                </Navbar.Collapse>
-            </Navbar>
+        <div id="main-dashboard-container">
+            <div id="main-dashboard-header">
+                <h1 id="main-dashboard-title">
+                    <FaUserCircle /> ¡Hola, {selectedProfile?.fullName}!
+                </h1>
+                <Dropdown id="main-dashboard-nav-dropdown">
+                    <Dropdown.Toggle variant="light" className="main-dashboard-btn">
+                        <FaCog /> Configuración
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={handleExitProfile}>
+                            <FaSignOutAlt /> Cerrar sesión
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </div>
 
-            <div className="row">
-                <div className="col-md-6">
-                    <div className="card profile-card">
-                        <div className="card-header">Perfiles</div>
-                        <div className="card-body">
-                            <ul className="list-group">
-                                {profiles.map((profile) => (
-                                    <li
-                                        key={profile._id}
-                                        className="list-group-item d-flex justify-content-between align-items-center profile-item"
-                                    >
-                                        <span>
-                                            {profile.fullName} {" "}
-                                            <span className="badge bg-primary">
-                                                {profile.role === "main" ? "Admin" : "Restringido"}
-                                            </span>
+            <div id="main-dashboard-cards-container">
+                <div className="main-dashboard-card">
+                    <h2 className="main-card-header">
+                        <FaUsers /> Perfiles
+                    </h2>
+                    <div id="main-profile-list">
+                        {profiles.map((profile) => (
+                            <div key={profile._id} className="main-profile-item">
+                                <div className="main-profile-info">
+                                    <div className="main-profile-avatar">
+                                        {profile.fullName.charAt(0)}
+                                    </div>
+                                    <div id="main-profile-pr-nameRole-container">
+                                        <h3 className="main-profile-name">{profile.fullName}</h3>
+                                        <span className="main-profile-role">
+                                            {profile.role === "main" ? "Admin" : "Restringido"}
                                         </span>
-                                        <div>
-                                            <button
-                                                className="btn btn-sm btn-info me-2"
-                                                onClick={() => navigate("/Profile_data", { state: { profile } })}
-                                            >
-                                                ✏️ Editar
-                                            </button>
-                                            <button
-                                                className="btn btn-sm btn-danger"
-                                                onClick={() => handleDeleteProfile(profile._id)}
-                                            >
-                                                🗑️ Borrar
-                                            </button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                                    </div>
+                                </div>
+                                <div className="main-profile-actions">
+                                    <button
+                                        className="main-dashboard-btn main-dashboard-btn-primary"
+                                        onClick={() => navigate("/Profile_data", { state: { profile } })}
+                                    >
+                                        <FaEdit /> Editar
+                                    </button>
+                                    <button
+                                        className="main-dashboard-btn main-dashboard-btn-danger"
+                                        onClick={() => handleDeleteProfile(profile._id)}
+                                    >
+                                        <FaTrash /> Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <button className="btn btn-success me-2" onClick={() => navigate("/Profile_data")}>
-                        ➕ Agregar Perfil
-                    </button>
                 </div>
 
-                <div className="col-md-6">
-                    <div className="card playlist-card">
-                        <div className="card-header">Playlists</div>
-                        <div className="card-body">
-                            <ul className="list-group">
-                                {playlists.map((playlist) => (
-                                    <li
-                                        key={playlist._id}
-                                        className="list-group-item d-flex justify-content-between align-items-center playlist-item"
+                <div className="main-dashboard-card">
+                    <h2 className="main-card-header">
+                        <FaList /> Playlists
+                    </h2>
+                    <div id="main-playlist-list">
+                        {playlists.map((playlist) => (
+                            <div key={playlist._id} className="main-playlist-item">
+                                <div className="main-playlist-info">
+                                    <div className="main-playlist-icon">
+                                        <FaMusic />
+                                    </div>
+                                    <h3 className="main-playlist-name">{playlist.name}</h3>
+                                </div>
+                                <div className="main-playlist-actions">
+                                    <button
+                                        className="main-dashboard-btn main-dashboard-btn-primary"
+                                        onClick={() => navigate("/playlist-details", { state: { playlist } })}
                                     >
-                                        <span>
-                                            {playlist.name}{" "}
-                                            <span className="badge bg-secondary">
-                                                👁️{playlist.profiles.length} perfiles - {playlist.videos.length} videos
-                                            </span>
-                                        </span>
-                                        <div>
-                                            <button className="btn btn-sm btn-info me-2" onClick={() => navigate(`/update_playlist/${playlist._id}`)}>
-                                                ✏️ Editar
-                                            </button>
-                                            <button className="btn btn-sm btn-danger" onClick={() => handleDeletePlaylist(playlist._id)}>
-                                                🗑️ Borrar
-                                            </button>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                                        <FaEdit /> Editar
+                                    </button>
+                                    <button
+                                        className="main-dashboard-btn main-dashboard-btn-danger"
+                                        onClick={() => handleDeletePlaylist(playlist._id)}
+                                    >
+                                        <FaTrash /> Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-                        🎵 Crear Playlist
-                    </button>
                 </div>
             </div>
 
-            {/* Modal para crear playlist */}
-            <Modal show={showModal} onHide={() => { setShowModal(false); setSelectedProfiles([]); }}>
+            <Modal id="main-dashboard-modal" show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Crear Nueva Playlist</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {errorMessage && (
-                        <div className="alert alert-danger" role="alert">
-                            {errorMessage}
-                        </div>
-                    )}
                     <Form>
                         <Form.Group className="mb-3">
-                            <Form.Label>Nombre de la Playlist</Form.Label>
+                            <Form.Label className="form-label">Nombre de la Playlist</Form.Label>
                             <Form.Control
                                 type="text"
+                                placeholder="Ingresa el nombre"
                                 value={newPlaylistName}
                                 onChange={(e) => setNewPlaylistName(e.target.value)}
+                                className="form-control"
                             />
                         </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Seleccionar Perfiles</Form.Label>
+                        <Form.Group className="mb-3">
+                            <Form.Label className="form-label">Seleccionar Perfiles</Form.Label>
                             {profiles.map((profile) => (
                                 <Form.Check
                                     key={profile._id}
+                                    type="checkbox"
                                     label={profile.fullName}
+                                    checked={selectedProfiles.includes(profile._id)}
                                     onChange={(e) => {
                                         if (e.target.checked) {
-                                            setSelectedProfiles((prev) => [...new Set([...prev, profile._id])]);
+                                            setSelectedProfiles([...selectedProfiles, profile._id]);
                                         } else {
-                                            setSelectedProfiles(selectedProfiles.filter((id) => id !== profile._id));
+                                            setSelectedProfiles(selectedProfiles.filter(id => id !== profile._id));
                                         }
                                     }}
+                                    className="form-check"
                                 />
                             ))}
                         </Form.Group>
+                        {errorMessage && (
+                            <div className="alert alert-danger" role="alert">
+                                {errorMessage}
+                            </div>
+                        )}
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={handleCreatePlaylist}>Guardar</Button>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Cancelar
+                    </Button>
+                    <Button variant="primary" onClick={handleCreatePlaylist}>
+                        Crear
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </div>

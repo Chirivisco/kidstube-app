@@ -96,45 +96,58 @@ export default function ProfileSelec() {
 
   return (
     <div className="container-fluid profile-container">
-      <h1 className="text-center">¿Quién está viendo?</h1>
-      <div className="row justify-content-center">
+      <div className="profile-header">
+        <h1 className="text-center profile-title">¿Quién está viendo?</h1>
+        <p className="text-center profile-subtitle">Selecciona tu perfil para comenzar la aventura</p>
+      </div>
+      <div className="row justify-content-center profiles-grid">
         {profiles.map((profile) => (
           <div key={profile._id} className="profile-wrapper">
             <div
-              className="col-6 col-md-3 profile-card"
+              className={`col-6 col-md-3 profile-card ${selectedProfileId === profile._id ? 'selected' : ''}`}
               onClick={() => handleProfileSelect(profile._id)}
             >
-              <img
-                src={
-                  profile.avatar.startsWith("http")
-                    ? profile.avatar
-                    : `http://localhost:3001/${profile.avatar.replace(/\\/g, "/").replace(/^\/?/, "")}`
-                }
-                alt={profile.fullName}
-                className="profile-avatar"
-              />
+              <div className="profile-avatar-container">
+                <img
+                  src={
+                    profile.avatar.startsWith("http")
+                      ? profile.avatar
+                      : `http://localhost:3001/${profile.avatar.replace(/\\/g, "/").replace(/^\/?/, "")}`
+                  }
+                  alt={profile.fullName}
+                  className="profile-avatar"
+                />
+                {selectedProfileId === profile._id && (
+                  <div className="profile-selected-indicator">
+                    <span className="selected-icon">✓</span>
+                  </div>
+                )}
+              </div>
               <h2 className="profile-name">{profile.fullName}</h2>
             </div>
 
-            {/* Mostrar el input del PIN si este perfil está seleccionado */}
             {selectedProfileId === profile._id && (
               <div className="pin-input-container">
-                <input
-                  type="password"
-                  className="form-control pin-input"
-                  placeholder="Ingresa tu PIN"
-                  maxLength={6}
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                />
-                <button
-                  className="btn btn-primary mt-2"
-                  onClick={() => handlePinSubmit(profile)} // Llamar a handlePinSubmit para seleccionar el perfil
-                >
-                  Entrar
-                </button>
+                <div className="pin-input-wrapper">
+                  <input
+                    type="password"
+                    className="form-control pin-input"
+                    placeholder="Ingresa tu PIN"
+                    maxLength={6}
+                    value={pin}
+                    onChange={(e) => setPin(e.target.value)}
+                  />
+                  <button
+                    className="btn btn-primary mt-3 enter-button"
+                    onClick={() => handlePinSubmit(profile)}
+                  >
+                    Entrar
+                  </button>
+                </div>
                 {errorMessage && (
-                  <p className="text-danger mt-2">{errorMessage}</p>
+                  <div className="error-message">
+                    <p className="text-danger">{errorMessage}</p>
+                  </div>
                 )}
               </div>
             )}

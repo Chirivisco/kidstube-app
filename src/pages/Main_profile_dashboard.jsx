@@ -3,10 +3,11 @@ import { useNavigate } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/Main_profile_dashboard.css";
 import { Navbar, Nav, NavDropdown, Modal, Button, Form } from "react-bootstrap";
-import { FaUserCircle, FaCog, FaSignOutAlt, FaEdit, FaTrash, FaList, FaMusic, FaUsers } from "react-icons/fa";
+import { FaUserCircle, FaCog, FaSignOutAlt, FaEdit, FaTrash, FaList, FaMusic, FaUsers, FaUserFriends, FaHeadphones } from "react-icons/fa";
 import { Dropdown } from "react-bootstrap";
 
 export default function MainProfileDashboard() {
+    const [activeSection, setActiveSection] = useState('profiles'); // 'profiles' o 'playlists'
     // Estado para almacenar los perfiles y playlists obtenidos del servidor
     const [profiles, setProfiles] = useState([]);
     const [playlists, setPlaylists] = useState([]);
@@ -185,91 +186,110 @@ export default function MainProfileDashboard() {
 
     return (
         <div id="main-dashboard-container">
-            <div id="main-dashboard-header">
-                <h1 id="main-dashboard-title">
-                    <FaUserCircle /> ¡Hola, {selectedProfile?.fullName}!
-                </h1>
-                <Dropdown id="main-dashboard-nav-dropdown">
-                    <Dropdown.Toggle variant="light" className="main-dashboard-btn">
-                        <FaCog /> Configuración
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={handleExitProfile}>
-                            <FaSignOutAlt /> Cerrar sesión
-                        </Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
+            <div id="main-dashboard-sidebar">
+                <button 
+                    className={activeSection === 'profiles' ? 'active' : ''}
+                    onClick={() => setActiveSection('profiles')}
+                >
+                    <FaUserFriends /> Perfiles
+                </button>
+                <button 
+                    className={activeSection === 'playlists' ? 'active' : ''}
+                    onClick={() => setActiveSection('playlists')}
+                >
+                    <FaHeadphones /> Playlists
+                </button>
             </div>
 
-            <div id="main-dashboard-cards-container">
-                <div className="main-dashboard-card">
-                    <h2 className="main-card-header">
-                        <FaUsers /> Perfiles
-                    </h2>
-                    <div id="main-profile-list">
-                        {profiles.map((profile) => (
-                            <div key={profile._id} className="main-profile-item">
-                                <div className="main-profile-info">
-                                    <div className="main-profile-avatar">
-                                        {profile.fullName.charAt(0)}
-                                    </div>
-                                    <div id="main-profile-pr-nameRole-container">
-                                        <h3 className="main-profile-name">{profile.fullName}</h3>
-                                        <span className="main-profile-role">
-                                            {profile.role === "main" ? "Admin" : "Restringido"}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="main-profile-actions">
-                                    <button
-                                        className="main-dashboard-btn main-dashboard-btn-primary"
-                                        onClick={() => navigate("/Profile_data", { state: { profile } })}
-                                    >
-                                        <FaEdit /> Editar
-                                    </button>
-                                    <button
-                                        className="main-dashboard-btn main-dashboard-btn-danger"
-                                        onClick={() => handleDeleteProfile(profile._id)}
-                                    >
-                                        <FaTrash /> Eliminar
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+            <div id="main-dashboard-content">
+                <div id="main-dashboard-header">
+                    <h1 id="main-dashboard-title">
+                        <FaUserCircle /> ¡Hola, {selectedProfile?.fullName}!
+                    </h1>
+                    <Dropdown id="main-dashboard-nav-dropdown">
+                        <Dropdown.Toggle variant="light" className="main-dashboard-btn">
+                            <FaCog /> Configuración
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={handleExitProfile}>
+                                <FaSignOutAlt /> Cerrar sesión
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </div>
 
-                <div className="main-dashboard-card">
-                    <h2 className="main-card-header">
-                        <FaList /> Playlists
-                    </h2>
-                    <div id="main-playlist-list">
-                        {playlists.map((playlist) => (
-                            <div key={playlist._id} className="main-playlist-item">
-                                <div className="main-playlist-info">
-                                    <div className="main-playlist-icon">
-                                        <FaMusic />
+                {activeSection === 'profiles' && (
+                    <div className="main-dashboard-card">
+                        <h2 className="main-card-header">
+                            <FaUsers /> Perfiles
+                        </h2>
+                        <div id="main-profile-list">
+                            {profiles.map((profile) => (
+                                <div key={profile._id} className="main-profile-item">
+                                    <div className="main-profile-info">
+                                        <div className="main-profile-avatar">
+                                            {profile.fullName.charAt(0)}
+                                        </div>
+                                        <div id="main-profile-pr-nameRole-container">
+                                            <h3 className="main-profile-name">{profile.fullName}</h3>
+                                            <span className="main-profile-role">
+                                                {profile.role === "main" ? "Admin" : "Restringido"}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <h3 className="main-playlist-name">{playlist.name}</h3>
+                                    <div className="main-profile-actions">
+                                        <button
+                                            className="main-dashboard-btn main-dashboard-btn-primary"
+                                            onClick={() => navigate("/Profile_data", { state: { profile } })}
+                                        >
+                                            <FaEdit /> Editar
+                                        </button>
+                                        <button
+                                            className="main-dashboard-btn main-dashboard-btn-danger"
+                                            onClick={() => handleDeleteProfile(profile._id)}
+                                        >
+                                            <FaTrash /> Eliminar
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="main-playlist-actions">
-                                    <button
-                                        className="main-dashboard-btn main-dashboard-btn-primary"
-                                        onClick={() => navigate("/playlist-details", { state: { playlist } })}
-                                    >
-                                        <FaEdit /> Editar
-                                    </button>
-                                    <button
-                                        className="main-dashboard-btn main-dashboard-btn-danger"
-                                        onClick={() => handleDeletePlaylist(playlist._id)}
-                                    >
-                                        <FaTrash /> Eliminar
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
+
+                {activeSection === 'playlists' && (
+                    <div className="main-dashboard-card">
+                        <h2 className="main-card-header">
+                            <FaList /> Playlists
+                        </h2>
+                        <div id="main-playlist-list">
+                            {playlists.map((playlist) => (
+                                <div key={playlist._id} className="main-playlist-item">
+                                    <div className="main-playlist-info">
+                                        <div className="main-playlist-icon">
+                                            <FaMusic />
+                                        </div>
+                                        <h3 className="main-playlist-name">{playlist.name}</h3>
+                                    </div>
+                                    <div className="main-playlist-actions">
+                                        <button
+                                            className="main-dashboard-btn main-dashboard-btn-primary"
+                                            onClick={() => navigate("/playlist-details", { state: { playlist } })}
+                                        >
+                                            <FaEdit /> Editar
+                                        </button>
+                                        <button
+                                            className="main-dashboard-btn main-dashboard-btn-danger"
+                                            onClick={() => handleDeletePlaylist(playlist._id)}
+                                        >
+                                            <FaTrash /> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
 
             <Modal id="main-dashboard-modal" show={showModal} onHide={() => setShowModal(false)}>

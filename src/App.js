@@ -5,6 +5,7 @@ import ProfileSelec from "./pages/Profile_selec.jsx";
 import MainProfileDashboard from "./pages/Main_profile_dashboard";
 import Profile_data from "./pages/Profile_data";
 import Update_playlist from "./pages/Update_playlist.jsx";
+import Playlist_details from "./pages/NewPlaylistDashboard.jsx";
 import RestrictedProfileDashboard from "./pages/Restricted_profile_dashboard.jsx";
 import ProtectedRoute from "./Middleware/ProtectedRoute.jsx";
 
@@ -37,7 +38,7 @@ function App() {
           path="/update_playlist/:playlistId"
           element={
             <ProtectedRoute allowedRoles={["main"]}>
-              <Update_playlist />
+              <Playlist_details />
             </ProtectedRoute>
           }
         />

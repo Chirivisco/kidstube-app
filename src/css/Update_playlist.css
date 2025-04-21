@@ -9,216 +9,278 @@ body {
 
 .update-playlist-container {
   max-width: 1200px;
-  margin: 30px auto;
-  padding: 20px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
 }
 
-.update-title {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #f5f5f5;  /* Blanco */
-  margin-bottom: 30px;
+/* Header */
+.playlist-header {
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  color: white;
 }
 
-.update-card,
-.profiles-card,
-.add-video-card {
-  background-color: #1e1e1e;  /* Fondo oscuro */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  margin-bottom: 30px;
-  padding: 20px;
-}
-
-.profiles-title,
-.videos-title,
-.add-video-title {
-  font-size: 1.75rem;
+.playlist-title {
+  font-size: 2rem;
+  margin: 0;
   font-weight: 600;
-  color: #f5f5f5;  /* Blanco */
-  margin-bottom: 15px;
 }
 
-.form-control {
-  border-radius: 8px;
-  background-color: #333333;  /* Fondo oscuro para inputs */
-  color: #f5f5f5;  /* Texto blanco */
-  border: 1px solid #444444;  /* Borde oscuro */
+.playlist-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-.form-control:focus {
-  border-color: #1e90ff;  /* Borde azul cuando se selecciona */
-  box-shadow: 0 0 5px rgba(30, 144, 255, 0.5);  /* Sombra azul */
-}
-
-button {
-  font-size: 1rem;
-  border-radius: 8px;
-}
-
-/* Estilos para los botones */
-button.primary-btn {
-  background-color: #1e90ff;
-  color: white;
+/* Botones */
+.save-button, .cancel-button, .edit-button, .delete-button {
+  padding: 0.8rem 1.5rem;
   border: none;
-}
-
-button.primary-btn:hover {
-  background-color: #4682b4;
-}
-
-button.danger-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-}
-
-button.danger-btn:hover {
-  background-color: #c82333;
-}
-
-button.info-btn {
-  background-color: #17a2b8;
-  color: white;
-  border: none;
-}
-
-button.info-btn:hover {
-  background-color: #138496;
-}
-
-button.success-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-}
-
-button.success-btn:hover {
-  background-color: #218838;
-}
-
-/* Estilos para las tarjetas de video */
-.accordion-item {
   border-radius: 8px;
-  margin-bottom: 15px;
-  background-color: #2c2c2c;  /* Fondo oscuro para las tarjetas */
-}
-
-.accordion-button {
-  background-color: #2c2c2c;  /* Fondo oscuro */
-  border-radius: 8px;
-  color: #f5f5f5;  /* Texto blanco */
   font-weight: 500;
-  text-align: left;
-  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.accordion-button:not(.collapsed) {
-  background-color: #444444;  /* Fondo más claro cuando está expandido */
+.save-button {
+  background-color: #2ecc71;
+  color: white;
 }
 
-.accordion-body {
-  padding: 20px;
+.save-button:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+}
+
+.cancel-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Secciones */
+.section-container {
+  background-color: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* Formularios */
+.video-form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #34495e;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.8rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   font-size: 1rem;
-  color: #f5f5f5;  /* Blanco */
-  background-color: #333333;  /* Fondo oscuro */
-  border-radius: 8px;
+  transition: border-color 0.2s;
 }
 
-.accordion-header {
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Lista de videos */
+.video-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.video-card {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.video-card:hover {
+  transform: translateY(-2px);
+}
+
+.video-info {
+  flex: 1;
+}
+
+.video-title {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #f5f5f5;  /* Blanco */
 }
 
-/* Estilos para el formulario de video */
-.add-video-card .form-control {
-  margin-bottom: 15px;
+.video-description {
+  color: #7f8c8d;
+  font-size: 0.9rem;
 }
 
-/* Estilos del Toast */
+.video-actions {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.edit-button {
+  background-color: #3498db;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.delete-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Perfiles */
+.profiles-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.profile-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.profile-checkbox:hover {
+  background-color: #f1f3f5;
+}
+
+.profile-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.profile-checkbox label {
+  font-size: 1rem;
+  color: #2c3e50;
+  cursor: pointer;
+}
+
+/* Toast */
 .toast-container {
-  position: absolute;
-  top: 30px;
-  right: 30px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
 }
 
-.toast-body {
-  font-size: 1.2rem;
-  color: #f5f5f5;  /* Blanco */
-  background-color: #333333;  /* Fondo oscuro */
-}
-
-/* Perfiles asociados */
-.profiles-card {
-  background-color: #1e1e1e;  /* Fondo oscuro */
-}
-
-.profiles-card .form-check {
-  margin-bottom: 15px;
-}
-
-.profiles-card .form-check-label {
-  font-size: 1.2rem;
-  color: #f5f5f5;  /* Blanco */
-}
-
-.profiles-card .form-check-input {
-  margin-right: 10px;
-}
-
-/* Títulos y espaciado */
-h3.profiles-title,
-h3.videos-title,
-h3.add-video-title {
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: #f5f5f5;  /* Blanco */
-  margin-bottom: 20px;
-}
-
-/* Formulario de edición del nombre de la playlist */
-.update-card .form-label {
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #f5f5f5;  /* Blanco */
-}
-
-.update-card .form-control {
-  margin-bottom: 15px;
-  padding: 10px;
-  font-size: 1.1rem;
+.toast {
+  background: white;
   border-radius: 8px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: slideIn 0.3s ease-out;
 }
 
-/* Alineación de botones */
-button.mt-3 {
-  margin-top: 20px;
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
-/* Estilos para la tabla de videos */
-.video-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
+.toast.success {
+  border-left: 4px solid #2ecc71;
 }
 
-.video-table th,
-.video-table td {
-  padding: 12px 15px;
-  text-align: left;
+.toast.error {
+  border-left: 4px solid #e74c3c;
 }
 
-.video-table th {
-  background-color: #444444;  /* Fondo más oscuro para las cabeceras */
-  font-weight: 600;
-  color: #f5f5f5;  /* Blanco */
+.toast button {
+  background: none;
+  border: none;
+  color: #7f8c8d;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
 }
 
-.video-table tr:nth-child(even) {
-  background-color: #333333;  /* Fondo oscuro para filas pares */
-}
+/* Responsive */
+@media (max-width: 768px) {
+  .update-playlist-container {
+    padding: 1rem;
+  }
 
-.video-table tr:hover {
-  background-color: #555555;  /* Fondo más claro al pasar el mouse */
+  .playlist-header {
+    text-align: center;
+  }
+
+  .playlist-actions {
+    flex-direction: column;
+  }
+
+  .video-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .video-actions {
+    margin-top: 1rem;
+    justify-content: center;
+  }
 }

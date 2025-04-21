@@ -1,0 +1,761 @@
+/* Estilos generales */
+.new-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    margin: 0 !important; /* Contrarresta el margen global */
+}
+
+/* Header */
+.dashboard-header {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.playlist-name-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1.8rem;
+    padding: 0.5rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.playlist-name-input:focus {
+    border-color: #4a90e2;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.save-btn, .cancel-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.save-btn {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #357abd;
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem !important;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 1rem;
+}
+
+.tab {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background: none;
+    color: #666;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.tab.active {
+    color: #4a90e2;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1rem;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #4a90e2;
+}
+
+/* Videos Section */
+.videos-section {
+    display: grid;
+    gap: 2rem;
+}
+
+.add-video-form,
+.edit-video-form {
+    display: grid;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    gap: 10px;
+    margin: 0px !important;
+}
+
+.add-video-form h3,
+.edit-video-form h3 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #4a90e2;
+    outline: none;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.submit-btn {
+    background: #4a90e2;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: #357abd;
+}
+
+.edit-form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.cancel-edit-btn {
+    background: #f5f5f5;
+    color: #666;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.cancel-edit-btn:hover {
+    background: #e0e0e0;
+}
+
+/* Videos List */
+.videos-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.video-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s;
+}
+
+.video-card:hover {
+    transform: translateY(-2px);
+}
+
+.video-info {
+    flex: 1;
+}
+
+.video-info h4 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+}
+
+.video-info p {
+    margin: 0.5rem 0 0;
+    color: #666;
+}
+
+.video-actions {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.edit-btn, .delete-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.edit-btn {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #357abd;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Profiles Section */
+.profiles-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.profiles-list {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.profile-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.profile-item:hover {
+    background-color: #f1f3f5;
+}
+
+.profile-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.profile-item label {
+    font-size: 1rem;
+    color: #2c3e50;
+    cursor: pointer;
+}
+
+.save-profiles-btn {
+    background-color: #4a90e2;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.save-profiles-btn:hover {
+    background-color: #357abd;
+    transform: translateY(-2px);
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast-content {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+.toast-content.success {
+    border-left: 4px solid #2ecc71;
+}
+
+.toast-content.error {
+    border-left: 4px solid #e74c3c;
+}
+
+.toast-content button {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .new-dashboard {
+        padding: 1rem;
+    }
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .playlist-name-input {
+        width: 100%;
+        text-align: center;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .video-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .video-actions {
+        margin-top: 1rem;
+        justify-content: center;
+    }
+}
+
+/* Estilos específicos del componente NewPlaylistDashboard */
+#new-playlist-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #F8F9FA;
+    min-height: 100vh;
+}
+
+#new-playlist-dashboard * {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#new-playlist-dashboard .dashboard-header {
+    background: linear-gradient(135deg, #2C3E50, #34495E);
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+#new-playlist-dashboard .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+#new-playlist-dashboard .playlist-name-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    font-size: 1.8rem;
+    padding: 0.5rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+#new-playlist-dashboard .playlist-name-input:focus {
+    border-color: #FF6B6B;
+}
+
+#new-playlist-dashboard .header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+#new-playlist-dashboard .save-btn {
+    background-color: #FF6B6B;
+    color: white;
+}
+
+#new-playlist-dashboard .save-btn:hover {
+    background-color: #FF5252;
+    transform: translateY(-2px);
+}
+
+#new-playlist-dashboard .cancel-btn {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+}
+
+#new-playlist-dashboard .cancel-btn:hover {
+    background-color: #BDC3C7;
+    transform: translateY(-2px);
+}
+
+#new-playlist-dashboard .tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem !important;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 1rem;
+}
+
+#new-playlist-dashboard .tab {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background: none;
+    color: #666;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+#new-playlist-dashboard .tab.active {
+    color: #FF6B6B;
+}
+
+#new-playlist-dashboard .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1rem;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #FF6B6B;
+}
+
+#new-playlist-dashboard .videos-section {
+    display: grid;
+    gap: 2rem;
+}
+
+#new-playlist-dashboard .add-video-form,
+#new-playlist-dashboard .edit-video-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(44, 62, 80, 0.1);
+    margin: 0px !important;
+    display: grid;
+    gap: 10px;
+}
+
+#new-playlist-dashboard .form-group input,
+#new-playlist-dashboard .form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ECF0F1;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+#new-playlist-dashboard .form-group input:focus,
+#new-playlist-dashboard .form-group textarea:focus {
+    border-color: #FF6B6B;
+    outline: none;
+}
+
+#new-playlist-dashboard .submit-btn {
+    background: #FF6B6B;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#new-playlist-dashboard .submit-btn:hover {
+    background: #FF5252;
+}
+
+#new-playlist-dashboard .edit-form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+#new-playlist-dashboard .cancel-edit-btn {
+    background: #ECF0F1;
+    color: #2C3E50;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #BDC3C7;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+#new-playlist-dashboard .cancel-edit-btn:hover {
+    background: #BDC3C7;
+}
+
+#new-playlist-dashboard .videos-list {
+    display: grid;
+    gap: 1rem;
+}
+
+#new-playlist-dashboard .video-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(44, 62, 80, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s;
+    border: 1px solid #ECF0F1;
+}
+
+#new-playlist-dashboard .video-card:hover {
+    transform: translateY(-2px);
+    border-color: #BDC3C7;
+}
+
+#new-playlist-dashboard .video-info {
+    flex: 1;
+}
+
+#new-playlist-dashboard .video-info h4 {
+    margin: 0;
+    color: #2C3E50;
+    font-size: 1.2rem;
+}
+
+#new-playlist-dashboard .video-info p {
+    margin: 0.5rem 0 0;
+    color: #666;
+}
+
+#new-playlist-dashboard .video-actions {
+    display: flex;
+    gap: 0.8rem;
+}
+
+#new-playlist-dashboard .edit-btn {
+    background-color: #FF6B6B;
+    color: white;
+}
+
+#new-playlist-dashboard .edit-btn:hover {
+    background-color: #FF5252;
+}
+
+#new-playlist-dashboard .delete-btn {
+    background-color: #ECF0F1;
+    color: #2C3E50;
+}
+
+#new-playlist-dashboard .delete-btn:hover {
+    background-color: #BDC3C7;
+}
+
+#new-playlist-dashboard .profiles-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+#new-playlist-dashboard .profiles-list {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+#new-playlist-dashboard .profile-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+#new-playlist-dashboard .profile-item:hover {
+    background-color: #f1f3f5;
+}
+
+#new-playlist-dashboard .profile-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+#new-playlist-dashboard .profile-item label {
+    font-size: 1rem;
+    color: #2c3e50;
+    cursor: pointer;
+}
+
+#new-playlist-dashboard .save-profiles-btn {
+    background-color: #4a90e2;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#new-playlist-dashboard .save-profiles-btn:hover {
+    background-color: #357abd;
+    transform: translateY(-2px);
+}
+
+#new-playlist-dashboard .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#new-playlist-dashboard .toast-content {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+#new-playlist-dashboard .toast-content.success {
+    border-left: 4px solid #FF6B6B;
+}
+
+#new-playlist-dashboard .toast-content.error {
+    border-left: 4px solid #E74C3C;
+}
+
+#new-playlist-dashboard .toast-content button {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #new-playlist-dashboard {
+        padding: 1rem;
+    }
+
+    #new-playlist-dashboard .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #new-playlist-dashboard .playlist-name-input {
+        width: 100%;
+        text-align: center;
+    }
+
+    #new-playlist-dashboard .header-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #new-playlist-dashboard .video-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #new-playlist-dashboard .video-actions {
+        margin-top: 1rem;
+        justify-content: center;
+    }
+} 

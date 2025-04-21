@@ -298,7 +298,7 @@ export default function MainProfileDashboard() {
                             </h2>
                             <button 
                                 className="main-dashboard-btn main-dashboard-btn-primary"
-                                onClick={() => navigate("/update-playlist")}
+                                onClick={() => setShowModal(true)}
                             >
                                 <FaPlus /> Crear Playlist
                             </button>
@@ -333,13 +333,13 @@ export default function MainProfileDashboard() {
                 )}
             </div>
 
-            <Modal id="main-dashboard-modal" show={showModal} onHide={() => setShowModal(false)}>
+            <Modal id="main-dashboard-modal" show={showModal} onHide={() => setShowModal(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Crear Nueva Playlist</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
-                        <Form.Group className="mb-3">
+                        <Form.Group className="mb-4">
                             <Form.Label className="form-label">Nombre de la Playlist</Form.Label>
                             <Form.Control
                                 type="text"
@@ -349,24 +349,26 @@ export default function MainProfileDashboard() {
                                 className="form-control"
                             />
                         </Form.Group>
-                        <Form.Group className="mb-3">
+                        <Form.Group className="mb-4">
                             <Form.Label className="form-label">Seleccionar Perfiles</Form.Label>
-                            {profiles.map((profile) => (
-                                <Form.Check
-                                    key={profile._id}
-                                    type="checkbox"
-                                    label={profile.fullName}
-                                    checked={selectedProfiles.includes(profile._id)}
-                                    onChange={(e) => {
-                                        if (e.target.checked) {
-                                            setSelectedProfiles([...selectedProfiles, profile._id]);
-                                        } else {
-                                            setSelectedProfiles(selectedProfiles.filter(id => id !== profile._id));
-                                        }
-                                    }}
-                                    className="form-check"
-                                />
-                            ))}
+                            <div className="profiles-checkbox-container">
+                                {profiles.map((profile) => (
+                                    <Form.Check
+                                        key={profile._id}
+                                        type="checkbox"
+                                        label={profile.fullName}
+                                        checked={selectedProfiles.includes(profile._id)}
+                                        onChange={(e) => {
+                                            if (e.target.checked) {
+                                                setSelectedProfiles([...selectedProfiles, profile._id]);
+                                            } else {
+                                                setSelectedProfiles(selectedProfiles.filter(id => id !== profile._id));
+                                            }
+                                        }}
+                                        className="form-check"
+                                    />
+                                ))}
+                            </div>
                         </Form.Group>
                         {errorMessage && (
                             <div className="alert alert-danger" role="alert">
@@ -380,7 +382,7 @@ export default function MainProfileDashboard() {
                         Cancelar
                     </Button>
                     <Button variant="primary" onClick={handleCreatePlaylist}>
-                        Crear
+                        Crear Playlist
                     </Button>
                 </Modal.Footer>
             </Modal>

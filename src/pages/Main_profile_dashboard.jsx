@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/Main_profile_dashboard.css";
 import { Navbar, Nav, NavDropdown, Modal, Button, Form } from "react-bootstrap";
-import { FaUserCircle, FaCog, FaSignOutAlt, FaEdit, FaTrash, FaList, FaMusic, FaUsers, FaUserFriends, FaHeadphones } from "react-icons/fa";
+import { FaUserCircle, FaCog, FaSignOutAlt, FaEdit, FaTrash, FaList, FaMusic, FaUsers, FaUserFriends, FaHeadphones, FaPlus } from "react-icons/fa";
 import { Dropdown } from "react-bootstrap";
 
 export default function MainProfileDashboard() {
@@ -95,8 +95,9 @@ export default function MainProfileDashboard() {
     // Maneja el cierre de sesión del usuario
     const handleLogout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        localStorage.removeItem("token_profile");
         localStorage.removeItem("selectedProfile");
+        localStorage.removeItem("user");
         navigate("/");
     };
 
@@ -184,6 +185,12 @@ export default function MainProfileDashboard() {
         }
     };
 
+    const handleChangeProfile = () => {
+        localStorage.removeItem("selectedProfile");
+        localStorage.removeItem("token_profile");
+        navigate("/profile-select");
+    };
+
     return (
         <div id="main-dashboard-container">
             <div id="main-dashboard-sidebar">
@@ -211,7 +218,10 @@ export default function MainProfileDashboard() {
                             <FaCog /> Configuración
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={handleExitProfile}>
+                            <Dropdown.Item onClick={handleChangeProfile}>
+                                <FaUserFriends /> Cambiar perfil
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={handleLogout}>
                                 <FaSignOutAlt /> Cerrar sesión
                             </Dropdown.Item>
                         </Dropdown.Menu>
@@ -220,15 +230,38 @@ export default function MainProfileDashboard() {
 
                 {activeSection === 'profiles' && (
                     <div className="main-dashboard-card">
-                        <h2 className="main-card-header">
-                            <FaUsers /> Perfiles
-                        </h2>
+                        <div className="main-card-header-container">
+                            <h2 className="main-card-header">
+                                <FaUsers /> Perfiles
+                            </h2>
+                            <button 
+                                className="main-dashboard-btn main-dashboard-btn-primary"
+                                onClick={() => navigate("/Profile_data")}
+                            >
+                                <FaPlus /> Agregar Perfil
+                            </button>
+                        </div>
                         <div id="main-profile-list">
                             {profiles.map((profile) => (
                                 <div key={profile._id} className="main-profile-item">
                                     <div className="main-profile-info">
                                         <div className="main-profile-avatar">
-                                            {profile.fullName.charAt(0)}
+                                            {profile.avatar ? (
+                                                <img 
+                                                    src={
+                                                        profile.avatar.startsWith("http")
+                                                            ? profile.avatar
+                                                            : `http://localhost:3001/${profile.avatar.replace(/\\/g, "/").replace(/^\/?/, "")}`
+                                                    }
+                                                    alt={profile.fullName.charAt(0)}
+                                                    onError={(e) => {
+                                                        e.target.style.display = 'none';
+                                                        e.target.parentElement.textContent = profile.fullName.charAt(0);
+                                                    }}
+                                                />
+                                            ) : (
+                                                profile.fullName.charAt(0)
+                                            )}
                                         </div>
                                         <div id="main-profile-pr-nameRole-container">
                                             <h3 className="main-profile-name">{profile.fullName}</h3>
@@ -259,9 +292,17 @@ export default function MainProfileDashboard() {
 
                 {activeSection === 'playlists' && (
                     <div className="main-dashboard-card">
-                        <h2 className="main-card-header">
-                            <FaList /> Playlists
-                        </h2>
+                        <div className="main-card-header-container">
+                            <h2 className="main-card-header">
+                                <FaList /> Playlists
+                            </h2>
+                            <button 
+                                className="main-dashboard-btn main-dashboard-btn-primary"
+                                onClick={() => navigate("/update-playlist")}
+                            >
+                                <FaPlus /> Crear Playlist
+                            </button>
+                        </div>
                         <div id="main-playlist-list">
                             {playlists.map((playlist) => (
                                 <div key={playlist._id} className="main-playlist-item">
@@ -274,7 +315,7 @@ export default function MainProfileDashboard() {
                                     <div className="main-playlist-actions">
                                         <button
                                             className="main-dashboard-btn main-dashboard-btn-primary"
-                                            onClick={() => navigate("/playlist-details", { state: { playlist } })}
+                                            onClick={() => navigate(`/update_playlist/${playlist._id}`)}
                                         >
                                             <FaEdit /> Editar
                                         </button>

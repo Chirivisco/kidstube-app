@@ -1,30 +1,118 @@
-.profile-form-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #222;
+#profile-data-container {
+    min-height: 100vh;
+    background: var(--background-color);
+    padding: 2rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.profile-data-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-data-header h1 {
+    font-size: 2rem;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.back-button {
+    background: var(--card-background);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.back-button:hover {
+    background: var(--primary-color);
     color: white;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
-  }
-  
-  .profile-form input {
-    background-color: #333;
+    transform: translateX(-5px);
+}
+
+.profile-data-card {
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.8rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+    outline: none;
+}
+
+.error-message {
+    background: #FFE6E6;
+    color: #FF5252;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.save-button {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary-color);
     color: white;
-    border: 1px solid #555;
-  }
-  
-  .profile-form input:focus {
-    background-color: #444;
-    color: white;
-  }
-  
-  .btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    
+    gap: 0.8rem;
+    transition: var(--transition);
+}
+
+.save-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    #profile-data-container {
+        padding: 1rem;
+    }
+
+    .profile-data-card {
+        padding: 1.5rem;
+    }
+}
   

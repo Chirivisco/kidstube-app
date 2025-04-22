@@ -8,12 +8,14 @@ import Update_playlist from "./pages/Update_playlist.jsx";
 import Playlist_details from "./pages/NewPlaylistDashboard.jsx";
 import RestrictedProfileDashboard from "./pages/Restricted_profile_dashboard.jsx";
 import ProtectedRoute from "./Middleware/ProtectedRoute.jsx";
+import EmailVerification from "./pages/EmailVerification";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LoginSignup />} />
+        <Route path="/verify-email" element={<EmailVerification />} />
         <Route path="/profile-select" element={<ProfileSelec />} />
         {/* Protege la ruta del dashboard principal para que solo los perfiles con rol "main" puedan acceder */}
         <Route

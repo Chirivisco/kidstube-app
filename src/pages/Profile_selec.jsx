@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../css/Profile_selec.css";
+import { API_ENDPOINTS } from "../config/api";
 
 export default function ProfileSelec() {
   const [profiles, setProfiles] = useState([]); // Lista de perfiles
@@ -23,7 +24,7 @@ export default function ProfileSelec() {
 
       try {
         const response = await fetch(
-          `http://localhost:3001/profiles/user/${userId}`,
+          `${API_ENDPOINTS.PROFILES}/user/${userId}`,
           {
             method: "GET",
             headers: {
@@ -60,7 +61,7 @@ export default function ProfileSelec() {
       // Ahora hacemos la llamada para obtener el token de perfil
       const token = localStorage.getItem("token"); // Obtener el token del usuario
       try {
-        const response = await fetch("http://localhost:3001/profiles/select-profile", {
+        const response = await fetch(`${API_ENDPOINTS.PROFILES}/select-profile`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`, // Mandamos el token del usuario

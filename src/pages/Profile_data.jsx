@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../css/Profile_data.css";
 import { FaUser, FaLock, FaArrowLeft, FaSave, FaImage } from "react-icons/fa";
+import { API_ENDPOINTS } from "../config/api";
 
 export default function ProfileData() {
     const navigate = useNavigate();
@@ -26,7 +27,7 @@ export default function ProfileData() {
         setFormData({
             ...formData,
             avatarFile: e.target.files[0],
-            avatarUrl: "" // Borra la URL si el usuario sube un archivo
+            avatarUrl: ""
         });
     };
 
@@ -34,7 +35,6 @@ export default function ProfileData() {
         e.preventDefault();
         setError("");
 
-        // Validación del PIN
         if (formData.pin.length !== 6 || isNaN(formData.pin)) {
             setError("El PIN debe ser un número de 6 dígitos.");
             return;
@@ -63,8 +63,8 @@ export default function ProfileData() {
 
         try {
             const url = profileToEdit
-                ? `http://localhost:3001/profiles/${profileToEdit._id}`
-                : "http://localhost:3001/profiles";
+                ? `${API_ENDPOINTS.PROFILES_DIRECT}/${profileToEdit.id}`
+                : API_ENDPOINTS.PROFILES_DIRECT;
             const method = profileToEdit ? "PATCH" : "POST";
 
             const response = await fetch(url, {
@@ -78,9 +78,11 @@ export default function ProfileData() {
             if (response.ok) {
                 navigate("/main-dashboard");
             } else {
-                setError("Error al guardar el perfil.");
+                const errorData = await response.json();
+                setError(errorData.error || "Error al guardar el perfil.");
             }
         } catch (error) {
+            console.error("Error:", error);
             setError("Error de conexión con el servidor.");
         }
     };

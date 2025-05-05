@@ -5,6 +5,7 @@ import "../css/Main_profile_dashboard.css";
 import { Navbar, Nav, NavDropdown, Modal, Button, Form } from "react-bootstrap";
 import { FaUserCircle, FaCog, FaSignOutAlt, FaEdit, FaTrash, FaList, FaMusic, FaUsers, FaUserFriends, FaHeadphones, FaPlus } from "react-icons/fa";
 import { Dropdown } from "react-bootstrap";
+import { API_ENDPOINTS } from "../config/api";
 
 export default function MainProfileDashboard() {
     const [activeSection, setActiveSection] = useState('profiles'); // 'profiles' o 'playlists'
@@ -47,35 +48,98 @@ export default function MainProfileDashboard() {
             }
 
             try {
-                // Verificar si ya se ha cargado la data
-                if (profiles.length > 0 && playlists.length > 0) return; // Evitar que se recarguen
-
                 // Realiza la solicitud al servidor para obtener los perfiles del usuario
                 const profilesResponse = await fetch(
-                    `http://localhost:3001/profiles/user/${userId}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                    `http://localhost:3002/graphql`,
+                    { 
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            query: `
+                                query GetProfilesByUser($userId: ID!) {
+                                    profilesByUser(userId: $userId) {
+                                        id
+                                        fullName
+                                        pin
+                                        avatar
+                                        role
+                                    }
+                                }
+                            `,
+                            variables: {
+                                userId: userId
+                            }
+                        })
+                    }
                 );
                 if (profilesResponse.ok) {
-                    setProfiles(await profilesResponse.json());
+                    const result = await profilesResponse.json();
+                    if (result.data && result.data.profilesByUser) {
+                        setProfiles(result.data.profilesByUser);
+                    } else {
+                        console.error("Error en la respuesta GraphQL:", result);
+                    }
                 } else {
-                    console.error("Error al obtener perfiles");
+                    console.error("Error al obtener perfiles:", await profilesResponse.text());
                 }
 
                 // Realiza la solicitud al servidor para obtener las playlists del usuario
                 const playlistsResponse = await fetch(
-                    `http://localhost:3001/api/playlists/user/${userId}`,
-                    {
-                        method: "GET",
-                        headers: { Authorization: `Bearer ${tokenProfile}` },
+                    `http://localhost:3002/graphql`,
+                    { 
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${tokenProfile}`
+                        },
+                        body: JSON.stringify({
+                            query: `
+                                query GetPlaylistsByUser($userId: ID!) {
+                                    user(id: $userId) {
+                                        profiles {
+                                            id
+                                            playlists {
+                                                id
+                                                name
+                                                description
+                                                profiles {
+                                                    id
+                                                    fullName
+                                                }
+                                                videos {
+                                                    id
+                                                    name
+                                                    url
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            `,
+                            variables: {
+                                userId: userId
+                            }
+                        })
                     }
                 );
 
                 if (playlistsResponse.ok) {
-                    const data = await playlistsResponse.json();
-                    setPlaylists(data);
+                    const result = await playlistsResponse.json();
+                    if (result.data && result.data.user) {
+                        // Extraer todas las playlists de todos los perfiles del usuario
+                        const allPlaylists = result.data.user.profiles.reduce((acc, profile) => {
+                            return [...acc, ...profile.playlists];
+                        }, []);
+                        setPlaylists(allPlaylists);
+                    } else {
+                        console.error("Error en la respuesta GraphQL:", result);
+                    }
                 } else {
                     setError("Error al obtener playlists");
-                    console.error("Error al obtener playlists", playlistsResponse);
+                    console.error("Error al obtener playlists:", await playlistsResponse.text());
                 }
             } catch (error) {
                 console.error("Error de conexión", error);
@@ -83,7 +147,7 @@ export default function MainProfileDashboard() {
         };
 
         fetchDashboardData();
-    }, [selectedProfile]); // solo depende de selectedProfile
+    }, []); // Solo se ejecuta al montar el componente
 
 
     // Maneja la salida del perfil seleccionado
@@ -103,25 +167,33 @@ export default function MainProfileDashboard() {
 
     // Maneja la eliminación de un perfil
     const handleDeleteProfile = async (profileId) => {
+        if (!profileId) {
+            console.error("ID de perfil no válido");
+            return;
+        }
+
         const confirmDelete = window.confirm("¿Estás seguro de eliminar este perfil?");
         const tokenProfile = localStorage.getItem("token_profile");
         if (!confirmDelete) return;
 
-        const token = localStorage.getItem("token");
-
         try {
-            const response = await fetch(`http://localhost:3001/profiles/${profileId}`, {
+            console.log("Eliminando perfil:", profileId);
+            const response = await fetch(`${API_ENDPOINTS.PROFILES_DIRECT}/${profileId}`, {
                 method: "DELETE",
-                headers: { Authorization: `Bearer ${tokenProfile}` },
+                headers: { 
+                    Authorization: `Bearer ${tokenProfile}`,
+                    'Content-Type': 'application/json'
+                },
             });
 
             if (response.ok) {
-                setProfiles(profiles.filter((profile) => profile._id !== profileId));
+                setProfiles(profiles.filter((profile) => profile.id !== profileId));
             } else {
-                console.error("Error al eliminar perfil");
+                const errorData = await response.json();
+                console.error("Error al eliminar perfil:", errorData.error);
             }
         } catch (error) {
-            console.error("Error de conexión al eliminar perfil", error);
+            console.error("Error de conexión al eliminar perfil:", error);
         }
     };
 
@@ -140,7 +212,7 @@ export default function MainProfileDashboard() {
 
         try {
             const tokenProfile = localStorage.getItem("token_profile");
-            const response = await fetch("http://localhost:3001/api/playlists", {
+            const response = await fetch(`${API_ENDPOINTS.PLAYLISTS}`, {
                 method: "POST",
                 headers: {Authorization: `Bearer ${tokenProfile}`, "Content-Type": "application/json"},
                 body: JSON.stringify({
@@ -170,7 +242,7 @@ export default function MainProfileDashboard() {
         if (!confirmDelete) return;
 
         try {
-            const response = await fetch(`http://localhost:3001/api/playlists/${playlistId}`, {
+            const response = await fetch(`${API_ENDPOINTS.PLAYLISTS}/${playlistId}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${tokenProfile}` },
             });
@@ -243,7 +315,7 @@ export default function MainProfileDashboard() {
                         </div>
                         <div id="main-profile-list">
                             {profiles.map((profile) => (
-                                <div key={profile._id} className="main-profile-item">
+                                <div key={profile.id} className="main-profile-item">
                                     <div className="main-profile-info">
                                         <div className="main-profile-avatar">
                                             {profile.avatar ? (
@@ -279,7 +351,7 @@ export default function MainProfileDashboard() {
                                         </button>
                                         <button
                                             className="main-dashboard-btn main-dashboard-btn-danger"
-                                            onClick={() => handleDeleteProfile(profile._id)}
+                                            onClick={() => handleDeleteProfile(profile.id)}
                                         >
                                             <FaTrash /> Eliminar
                                         </button>

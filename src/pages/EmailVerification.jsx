@@ -1,79 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Container, Alert, Spinner } from 'react-bootstrap';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import '../css/EmailVerification.css';
 
 const EmailVerification = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [status, setStatus] = useState('verifying');
-    const [message, setMessage] = useState('Verificando tu email...');
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
-        const verifyEmail = () => {
-            const success = searchParams.get('success');
-            const error = searchParams.get('error');
-            
-            if (success === 'true') {
-                setStatus('success');
-                setMessage('¡Email verificado exitosamente!');
-                // Redirigir a la página principal después de 3 segundos
-                setTimeout(() => {
-                    navigate('/');
-                }, 3000);
-            } else if (error) {
-                setStatus('error');
-                switch (error) {
-                    case 'user_not_found':
-                        setMessage('No se encontró el usuario a verificar');
-                        break;
-                    case 'invalid_token':
-                        setMessage('El token de verificación es inválido o ha expirado');
-                        break;
-                    default:
-                        setMessage('Error al verificar el email');
-                }
-            } else {
-                setStatus('error');
-                setMessage('No se encontró el token de verificación');
-            }
-        };
+        const status = searchParams.get('status');
+        const errorMessage = searchParams.get('message');
 
-        verifyEmail();
+        if (status === 'success') {
+            setStatus('success');
+            setMessage('¡Email verificado exitosamente!');
+            setTimeout(() => {
+                navigate('/');
+            }, 5000);
+        } else if (status === 'error') {
+            setStatus('error');
+            setMessage(errorMessage || 'Error al verificar el email');
+        } else {
+            setStatus('error');
+            setMessage('Estado de verificación no válido');
+        }
     }, [searchParams, navigate]);
 
     return (
-        <Container className="verification-container">
+        <div className="verification-container">
             <div className="verification-card">
-                {status === 'verifying' && (
-                    <div className="text-center">
-                        <Spinner animation="border" role="status" />
-                        <p className="mt-3">{message}</p>
+                <h1>Verificación de Email</h1>
+                
+                {status === 'success' && (
+                    <div className="success">
+                        <i className="fas fa-check-circle"></i>
+                        <p>{message}</p>
+                        <p>Serás redirigido al login en breve...</p>
                     </div>
                 )}
                 
-                {status === 'success' && (
-                    <Alert variant="success" className="text-center">
-                        <Alert.Heading>¡Verificación Exitosa!</Alert.Heading>
-                        <p>{message}</p>
-                        <p>Serás redirigido a la página principal en unos momentos...</p>
-                    </Alert>
-                )}
-                
                 {status === 'error' && (
-                    <Alert variant="danger" className="text-center">
-                        <Alert.Heading>Error de Verificación</Alert.Heading>
+                    <div className="error">
+                        <i className="fas fa-exclamation-circle"></i>
                         <p>{message}</p>
-                        <button 
-                            className="btn btn-primary mt-3"
-                            onClick={() => navigate('/')}
-                        >
-                            Volver a la página principal
+                        <button onClick={() => navigate('/')}>
+                            Volver al Login
                         </button>
-                    </Alert>
+                    </div>
                 )}
             </div>
-        </Container>
+        </div>
     );
 };
 

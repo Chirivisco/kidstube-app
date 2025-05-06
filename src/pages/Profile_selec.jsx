@@ -109,7 +109,13 @@ export default function ProfileSelec() {
 
           localStorage.setItem("token_profile", tokenProfile);
           localStorage.setItem("selectedProfile", JSON.stringify(profile));
-          navigate("/main-dashboard");
+
+          // Redirigir según el rol del perfil
+          if (profile.role === "main") {
+            navigate("/main-dashboard");
+          } else {
+            navigate(`/restricted-dashboard/${profile.id}`);
+          }
         } else {
           setErrorMessages(prev => ({
             ...prev,

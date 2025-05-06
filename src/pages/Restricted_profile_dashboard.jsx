@@ -67,12 +67,42 @@ const RestrictedProfileDashboard = () => {
     const fetchPlaylists = async () => {
         try {
             const token = localStorage.getItem("token");
-            const tokenProfile = localStorage.getItem("token_profile");
-            const config = {
-                headers: { Authorization: `Bearer ${tokenProfile}` },
-            };
-            const response = await axios.get(`http://localhost:3001/api/playlists/profile/${selectedProfile._id}`, config); // Obtiene las playlists del perfil
-            setPlaylists(response.data);
+            const response = await fetch('http://localhost:4000/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    query: `
+                        query GetProfile($profileId: ID!) {
+                            profile(id: $profileId) {
+                                id
+                                playlists {
+                                    id
+                                    name
+                                    description
+                                    videos {
+                                        id
+                                        name
+                                        url
+                                    }
+                                }
+                            }
+                        }
+                    `,
+                    variables: {
+                        profileId: selectedProfile.id
+                    }
+                })
+            });
+
+            const result = await response.json();
+            if (result.data && result.data.profile) {
+                setPlaylists(result.data.profile.playlists);
+            } else {
+                console.error("Error en la respuesta GraphQL:", result);
+            }
         } catch (error) {
             console.error("Error al obtener las playlists", error);
         }
@@ -84,15 +114,54 @@ const RestrictedProfileDashboard = () => {
      * @param {string} playlistName - Nombre de la playlist seleccionada.
      */
     const fetchVideos = async (playlistId, playlistName) => {
+        if (!playlistId) {
+            console.error('No playlist ID provided');
+            return;
+        }
+
         try {
             const token = localStorage.getItem("token");
-            const tokenProfile = localStorage.getItem("token_profile");
-            const config = {
-                headers: { Authorization: `Bearer ${tokenProfile}` },
+            const query = `
+                query GetPlaylist($id: ID!) {
+                    playlist(id: $id) {
+                        id
+                        name
+                        videos {
+                            id
+                            name
+                            url
+                        }
+                    }
+                }
+            `;
+
+            const variables = {
+                id: playlistId
             };
-            const response = await axios.get(`http://localhost:3001/api/playlists/${playlistId}/videos`, config); // Obtiene los videos de la playlist
-            setVideos(response.data);
-            setSelectedPlaylistName(playlistName); // Actualiza el nombre de la playlist seleccionada
+
+            console.log('Sending GraphQL request:', { query, variables });
+
+            const response = await fetch('http://localhost:4000/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    query,
+                    variables
+                })
+            });
+
+            const result = await response.json();
+            console.log('GraphQL response:', result);
+
+            if (result.data && result.data.playlist) {
+                setVideos(result.data.playlist.videos);
+                setSelectedPlaylistName(playlistName);
+            } else {
+                console.error("Error en la respuesta GraphQL:", result);
+            }
         } catch (error) {
             console.error("Error al obtener los videos", error);
         }
@@ -159,9 +228,16 @@ const RestrictedProfileDashboard = () => {
                             <ListGroup variant="flush" className="playlist-list">
                                 {playlists.map(playlist => (
                                     <ListGroup.Item
-                                        key={playlist._id}
+                                        key={playlist.id}
                                         className={`playlist-item ${selectedPlaylistName === playlist.name ? "active-playlist" : ""}`}
-                                        onClick={() => fetchVideos(playlist._id, playlist.name)}
+                                        onClick={() => {
+                                            console.log('Selected playlist:', playlist);
+                                            if (playlist && playlist.id) {
+                                                fetchVideos(playlist.id, playlist.name);
+                                            } else {
+                                                console.error('Invalid playlist data:', playlist);
+                                            }
+                                        }}
                                     >
                                         {playlist.name}
                                     </ListGroup.Item>

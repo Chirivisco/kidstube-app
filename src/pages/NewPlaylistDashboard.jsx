@@ -21,16 +21,47 @@ const NewPlaylistDashboard = () => {
         const fetchPlaylist = async () => {
             const tokenProfile = localStorage.getItem("token_profile");
             try {
-                const response = await fetch(`http://localhost:3001/api/playlists/${playlistId}`, {
-                    headers: { Authorization: `Bearer ${tokenProfile}` },
+                const response = await fetch(`http://localhost:4000/graphql`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${tokenProfile}`
+                    },
+                    body: JSON.stringify({
+                        query: `
+                            query GetPlaylist($playlistId: ID!) {
+                                playlist(id: $playlistId) {
+                                    id
+                                    name
+                                    videos {
+                                        id
+                                        name
+                                        url
+                                        description
+                                    }
+                                    profiles {
+                                        id
+                                        fullName
+                                    }
+                                }
+                            }
+                        `,
+                        variables: {
+                            playlistId: playlistId
+                        }
+                    })
                 });
+
                 if (response.ok) {
-                    const data = await response.json();
-                    setPlaylist(data);
-                    setPlaylistName(data.name);
-                    setVideos(data.videos);
-                    if (data.profiles && Array.isArray(data.profiles)) {
-                        setSelectedProfiles(data.profiles);
+                    const result = await response.json();
+                    if (result.data && result.data.playlist) {
+                        const playlistData = result.data.playlist;
+                        setPlaylist(playlistData);
+                        setPlaylistName(playlistData.name);
+                        setVideos(playlistData.videos);
+                        if (playlistData.profiles && Array.isArray(playlistData.profiles)) {
+                            setSelectedProfiles(playlistData.profiles.map(profile => profile.id));
+                        }
                     }
                 }
             } catch (error) {
@@ -46,12 +77,32 @@ const NewPlaylistDashboard = () => {
             if (!userId) return;
 
             try {
-                const response = await fetch(`http://localhost:3001/profiles/user/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                const response = await fetch(`http://localhost:4000/graphql`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        query: `
+                            query GetProfilesByUser($userId: ID!) {
+                                profilesByUser(userId: $userId) {
+                                    id
+                                    fullName
+                                }
+                            }
+                        `,
+                        variables: {
+                            userId: userId
+                        }
+                    })
                 });
+
                 if (response.ok) {
-                    const profiles = await response.json();
-                    setAllProfiles(profiles);
+                    const result = await response.json();
+                    if (result.data && result.data.profilesByUser) {
+                        setAllProfiles(result.data.profilesByUser);
+                    }
                 }
             } catch (error) {
                 console.error("Error al obtener los perfiles", error);

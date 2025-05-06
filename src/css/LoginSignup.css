@@ -243,3 +243,57 @@
 .or-divider::after {
   right: 0;
 }
+
+.google-confirmation {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.google-confirmation h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.user-details {
+  text-align: left;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.user-details p {
+  margin: 0.8rem 0;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.user-details strong {
+  color: #333;
+  margin-right: 0.5rem;
+}
+
+.confirmation-actions {
+  margin-top: 2rem;
+}
+
+.confirmation-actions button {
+  background: #4285f4;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.confirmation-actions button:hover {
+  background: #357abd;
+}

@@ -1,3 +1,187 @@
+/* Estilos globales */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Transiciones suaves */
+.MuiPaper-root,
+.MuiCard-root,
+.MuiListItem-root,
+.MuiButton-root {
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* Efectos hover personalizados */
+.MuiCard-root:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.MuiListItem-root:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Estilos para el modal de video */
+.MuiDialog-paper {
+    border-radius: 16px !important;
+    overflow: hidden;
+}
+
+.MuiDialogTitle-root {
+    background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
+    color: white !important;
+    padding: 16px 24px !important;
+}
+
+.MuiDialogContent-root {
+    padding: 24px !important;
+}
+
+/* Estilos para la barra de búsqueda */
+.MuiTextField-root {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.MuiInputBase-root {
+    padding: 8px 16px !important;
+}
+
+/* Estilos para el drawer */
+.MuiDrawer-paper {
+    border-right: none !important;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Estilos para el AppBar */
+.MuiAppBar-root {
+    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Estilos para las tarjetas de video */
+.video-card {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Estilos para el avatar del perfil */
+.MuiAvatar-root {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para los botones */
+.MuiButton-contained {
+    text-transform: none !important;
+    font-weight: 500 !important;
+    padding: 8px 24px !important;
+}
+
+/* Estilos para el menú de usuario */
+.MuiMenu-paper {
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.MuiMenuItem-root {
+    padding: 12px 24px !important;
+}
+
+/* Estilos para el contenedor de video */
+.video-container {
+    position: relative;
+    padding-top: 56.25%;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Estilos para el estado de carga */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+/* Estilos para mensajes de error */
+.error-message {
+    color: #d32f2f;
+    text-align: center;
+    padding: 16px;
+    background-color: #ffebee;
+    border-radius: 8px;
+    margin: 16px 0;
+}
+
+/* Estilos para el estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 32px;
+    color: #757575;
+}
+
+/* Estilos responsivos */
+@media (max-width: 600px) {
+    .MuiContainer-root {
+        padding: 8px !important;
+    }
+    
+    .MuiGrid-item {
+        padding: 8px !important;
+    }
+    
+    .MuiDialog-paper {
+        margin: 16px !important;
+    }
+}
+
 .dashboard-container {
     background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
     min-height: 100vh;

@@ -1,50 +1,82 @@
 import React, { useState, useEffect } from "react";
-import { Navbar, Nav, NavDropdown, Container, Row, Col, Card, ListGroup, Form, FormControl, Modal, Button } from "react-bootstrap";
-import axios from "axios";
+import {
+    Box,
+    Drawer,
+    AppBar,
+    Toolbar,
+    List,
+    Typography,
+    Divider,
+    IconButton,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Card,
+    CardContent,
+    TextField,
+    Grid,
+    Avatar,
+    Menu,
+    MenuItem,
+    useTheme,
+    useMediaQuery,
+    Paper,
+    Container,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+} from "@mui/material";
+import {
+    Menu as MenuIcon,
+    ChevronLeft as ChevronLeftIcon,
+    PlaylistPlay as PlaylistIcon,
+    VideoLibrary as VideoIcon,
+    ExitToApp as LogoutIcon,
+    Person as PersonIcon,
+    Search as SearchIcon,
+    Close as CloseIcon,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import "../css/Restricted_profile_dashboard.css";
 
+const drawerWidth = 280;
+
 const RestrictedProfileDashboard = () => {
-    // Estado para almacenar el perfil seleccionado
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+    const [mobileOpen, setMobileOpen] = useState(false);
     const [selectedProfile, setSelectedProfile] = useState(() => {
         const storedProfile = localStorage.getItem("selectedProfile");
         return storedProfile ? JSON.parse(storedProfile) : null;
     });
-
-    // Estado para almacenar las playlists asociadas al perfil
     const [playlists, setPlaylists] = useState([]);
-
-    // Estado para almacenar los videos de la playlist seleccionada
     const [videos, setVideos] = useState([]);
-
-    // Estado para manejar el término de búsqueda de videos
     const [searchTerm, setSearchTerm] = useState("");
-
-    // Estado para almacenar el nombre de la playlist seleccionada
     const [selectedPlaylistName, setSelectedPlaylistName] = useState("");
-
-    // Estado para controlar la visibilidad del modal
     const [showModal, setShowModal] = useState(false);
-
-    // Estado para almacenar la URL del video seleccionado
     const [videoUrl, setVideoUrl] = useState("");
-
-    // Hook para manejar la navegación entre rutas
+    const [anchorEl, setAnchorEl] = useState(null);
     const navigate = useNavigate();
 
-    /**
-     * Maneja la salida del perfil seleccionado.
-     * Elimina el perfil del localStorage y redirige al selector de perfiles.
-     */
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
+
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
     const handleExitProfile = () => {
         localStorage.removeItem("selectedProfile");
         navigate("/profile-select");
     };
 
-    /**
-     * Maneja el cierre de sesión del usuario.
-     * Elimina el token, el usuario y el perfil seleccionado del localStorage y redirige a la página de inicio.
-     */
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -52,18 +84,12 @@ const RestrictedProfileDashboard = () => {
         navigate("/");
     };
 
-    /**
-     * Efecto para cargar las playlists cuando se selecciona un perfil.
-     */
     useEffect(() => {
         if (selectedProfile) {
             fetchPlaylists();
         }
     }, [selectedProfile]);
 
-    /**
-     * Obtiene las playlists asociadas al perfil seleccionado desde el backend.
-     */
     const fetchPlaylists = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -100,47 +126,17 @@ const RestrictedProfileDashboard = () => {
             const result = await response.json();
             if (result.data && result.data.profile) {
                 setPlaylists(result.data.profile.playlists);
-            } else {
-                console.error("Error en la respuesta GraphQL:", result);
             }
         } catch (error) {
             console.error("Error al obtener las playlists", error);
         }
     };
 
-    /**
-     * Obtiene los videos de una playlist específica desde el backend.
-     * @param {string} playlistId - ID de la playlist seleccionada.
-     * @param {string} playlistName - Nombre de la playlist seleccionada.
-     */
     const fetchVideos = async (playlistId, playlistName) => {
-        if (!playlistId) {
-            console.error('No playlist ID provided');
-            return;
-        }
+        if (!playlistId) return;
 
         try {
             const token = localStorage.getItem("token");
-            const query = `
-                query GetPlaylist($id: ID!) {
-                    playlist(id: $id) {
-                        id
-                        name
-                        videos {
-                            id
-                            name
-                            url
-                        }
-                    }
-                }
-            `;
-
-            const variables = {
-                id: playlistId
-            };
-
-            console.log('Sending GraphQL request:', { query, variables });
-
             const response = await fetch('http://localhost:4000/graphql', {
                 method: 'POST',
                 headers: {
@@ -148,157 +144,360 @@ const RestrictedProfileDashboard = () => {
                     Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    query,
-                    variables
+                    query: `
+                        query GetPlaylist($id: ID!) {
+                            playlist(id: $id) {
+                                id
+                                name
+                                videos {
+                                    id
+                                    name
+                                    url
+                                }
+                            }
+                        }
+                    `,
+                    variables: {
+                        id: playlistId
+                    }
                 })
             });
 
             const result = await response.json();
-            console.log('GraphQL response:', result);
-
             if (result.data && result.data.playlist) {
                 setVideos(result.data.playlist.videos);
                 setSelectedPlaylistName(playlistName);
-            } else {
-                console.error("Error en la respuesta GraphQL:", result);
             }
         } catch (error) {
             console.error("Error al obtener los videos", error);
         }
     };
 
-    /**
-     * Filtra los videos según el término de búsqueda ingresado.
-     */
     const filteredVideos = videos.filter(video =>
         video.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         video.url.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    /**
-     * Abre el modal para reproducir un video.
-     * @param {string} url - URL del video seleccionado.
-     */
     const openVideoModal = (url) => {
-        // Verifica si la URL es en formato "youtu.be"
-        const videoId = url.includes("youtu.be")
-            ? url.split("/")[3].split("?")[0] // Extrae el ID del video
-            : url.split("v=")[1].split("&")[0]; // Extrae el ID si ya es una URL de YouTube
-    
-        // Crea la URL en formato de incrustación
-        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-        
-        setVideoUrl(embedUrl); // Establece la URL para el iframe
-        setShowModal(true); // Muestra el modal
+        let videoId;
+        if (url.includes("youtu.be")) {
+            videoId = url.split("/")[3].split("?")[0];
+        } else if (url.includes("youtube.com")) {
+            videoId = url.split("v=")[1].split("&")[0];
+        } else {
+            videoId = url;
+        }
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        setVideoUrl(embedUrl);
+        setShowModal(true);
     };
 
-    /**
-     * Cierra el modal de reproducción de video.
-     */
-    const closeModal = () => {
-        setShowModal(false); // Cierra el modal
-        setVideoUrl(""); // Resetea la URL del video
-    };
+    const drawer = (
+        <Box sx={{ height: '100%', bgcolor: 'background.paper' }}>
+            <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2 }}>
+                <Typography variant="h6" noWrap component="div">
+                    KidsTube
+                </Typography>
+                {isMobile && (
+                    <IconButton onClick={handleDrawerToggle}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                )}
+            </Toolbar>
+            <Divider />
+            <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+                    {selectedProfile?.fullName?.charAt(0)}
+                </Avatar>
+                <Box>
+                    <Typography variant="subtitle1" noWrap>
+                        {selectedProfile?.fullName}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Perfil Restringido
+                    </Typography>
+                </Box>
+            </Box>
+            <Divider />
+            <List>
+                <ListItem button onClick={() => setMobileOpen(false)}>
+                    <ListItemIcon>
+                        <PlaylistIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Playlists" />
+                </ListItem>
+                <ListItem button onClick={() => setMobileOpen(false)}>
+                    <ListItemIcon>
+                        <VideoIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Videos" />
+                </ListItem>
+            </List>
+        </Box>
+    );
 
     return (
-        <div className="dashboard-container">
-            {/* Barra de navegación */}
-            <Navbar expand="lg" className="header-container">
-                <Navbar.Brand className="dashboard-title mx-3">
-                    Bienvenido, {selectedProfile?.fullName}!
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="ms-auto" id="navigation-bar">
-                        <NavDropdown title="⚙️ Opciones" id="basic-nav-dropdown">
-                            <NavDropdown.Item onClick={handleExitProfile}>🚪 Salir del Perfil</NavDropdown.Item>
-                            <NavDropdown.Item onClick={handleLogout}>🔒 Cerrar Sesión</NavDropdown.Item>
-                        </NavDropdown>
-                    </Nav>
-                </Navbar.Collapse>
-            </Navbar>
+        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
+            <AppBar
+                position="fixed"
+                sx={{
+                    width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    ml: { sm: `${drawerWidth}px` },
+                    bgcolor: 'background.paper',
+                    color: 'text.primary',
+                    boxShadow: 1
+                }}
+            >
+                <Toolbar>
+                    <IconButton
+                        color="inherit"
+                        edge="start"
+                        onClick={handleDrawerToggle}
+                        sx={{ mr: 2, display: { sm: 'none' } }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+                        {selectedPlaylistName ? `Playlist: ${selectedPlaylistName}` : 'Dashboard'}
+                    </Typography>
+                    <IconButton
+                        onClick={handleMenuOpen}
+                        size="large"
+                        edge="end"
+                        color="inherit"
+                    >
+                        <PersonIcon />
+                    </IconButton>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                    >
+                        <MenuItem onClick={handleExitProfile}>
+                            <ListItemIcon>
+                                <LogoutIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Salir del Perfil</ListItemText>
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout}>
+                            <ListItemIcon>
+                                <LogoutIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Cerrar Sesión</ListItemText>
+                        </MenuItem>
+                    </Menu>
+                </Toolbar>
+            </AppBar>
 
-            {/* Contenido principal */}
-            <Container fluid>
-                <Row>
-                    {/* Columna de playlists */}
-                    <Col md={4} className="playlists-column">
-                        <Card className="playlist-card shadow-sm">
-                            <Card.Header className="playlist-header">🎵 Tus Playlists</Card.Header>
-                            <ListGroup variant="flush" className="playlist-list">
-                                {playlists.map(playlist => (
-                                    <ListGroup.Item
-                                        key={playlist.id}
-                                        className={`playlist-item ${selectedPlaylistName === playlist.name ? "active-playlist" : ""}`}
-                                        onClick={() => {
-                                            console.log('Selected playlist:', playlist);
-                                            if (playlist && playlist.id) {
-                                                fetchVideos(playlist.id, playlist.name);
-                                            } else {
-                                                console.error('Invalid playlist data:', playlist);
-                                            }
+            <Box
+                component="nav"
+                sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+            >
+                <Drawer
+                    variant={isMobile ? "temporary" : "permanent"}
+                    open={mobileOpen}
+                    onClose={handleDrawerToggle}
+                    ModalProps={{
+                        keepMounted: true,
+                    }}
+                    sx={{
+                        '& .MuiDrawer-paper': {
+                            boxSizing: 'border-box',
+                            width: drawerWidth,
+                        },
+                    }}
+                >
+                    {drawer}
+                </Drawer>
+            </Box>
+
+            <Box
+                component="main"
+                sx={{
+                    flexGrow: 1,
+                    p: 3,
+                    width: { sm: `calc(100% - ${drawerWidth}px)` },
+                    mt: '64px'
+                }}
+            >
+                <Container maxWidth="xl">
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} md={4}>
+                            <Paper
+                                elevation={3}
+                                sx={{
+                                    p: 2,
+                                    height: 'calc(100vh - 100px)',
+                                    overflow: 'auto'
+                                }}
+                            >
+                                <Typography variant="h6" gutterBottom>
+                                    Playlists
+                                </Typography>
+                                <List>
+                                    {playlists.map((playlist) => (
+                                        <ListItem
+                                            key={playlist.id}
+                                            button
+                                            selected={selectedPlaylistName === playlist.name}
+                                            onClick={() => fetchVideos(playlist.id, playlist.name)}
+                                            sx={{
+                                                borderRadius: 1,
+                                                mb: 1,
+                                                '&.Mui-selected': {
+                                                    bgcolor: 'primary.main',
+                                                    color: 'primary.contrastText',
+                                                    '&:hover': {
+                                                        bgcolor: 'primary.dark',
+                                                    },
+                                                },
+                                            }}
+                                        >
+                                            <ListItemIcon sx={{ color: 'inherit' }}>
+                                                <PlaylistIcon />
+                                            </ListItemIcon>
+                                            <ListItemText primary={playlist.name} />
+                                        </ListItem>
+                                    ))}
+                                </List>
+                            </Paper>
+                        </Grid>
+
+                        <Grid item xs={12} md={8}>
+                            <Paper
+                                elevation={3}
+                                sx={{
+                                    p: 2,
+                                    height: 'calc(100vh - 100px)',
+                                    display: 'flex',
+                                    flexDirection: 'column'
+                                }}
+                            >
+                                <Box sx={{ mb: 2 }}>
+                                    <TextField
+                                        fullWidth
+                                        variant="outlined"
+                                        placeholder="Buscar videos..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        InputProps={{
+                                            startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
                                         }}
-                                    >
-                                        {playlist.name}
-                                    </ListGroup.Item>
-                                ))}
-                            </ListGroup>
-                        </Card>
-                    </Col>
+                                    />
+                                </Box>
 
-                    {/* Columna de videos */}
-                    <Col md={8} className="videos-column">
-                        <Card className="video-card shadow-sm">
-                            <Card.Header className="video-header">
-                                🎬 Videos {selectedPlaylistName && `de "${selectedPlaylistName}"`}
-                            </Card.Header>
-                            <Form className="search-bar">
-                                <FormControl
-                                    type="text"
-                                    placeholder="Buscar videos..."
-                                    className="search-input"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </Form>
-                            <ListGroup variant="flush" className="video-list">
-                                {filteredVideos.length > 0 ? (
-                                    filteredVideos.map(video => (
-                                        <ListGroup.Item key={video._id} className="video-item">
-                                            <strong>{video.name}</strong> - <Button variant="link" onClick={() => openVideoModal(video.url)}>Ver</Button>
-                                        </ListGroup.Item>
-                                    ))
-                                ) : (
-                                    <p className="text-center no-videos">No hay videos disponibles.</p>
-                                )}
-                            </ListGroup>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
+                                <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+                                    {filteredVideos.length > 0 ? (
+                                        <Grid container spacing={2}>
+                                            {filteredVideos.map((video) => (
+                                                <Grid item xs={12} sm={6} md={4} key={video.id}>
+                                                    <Card
+                                                        sx={{
+                                                            height: '100%',
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            transition: 'transform 0.2s',
+                                                            '&:hover': {
+                                                                transform: 'scale(1.02)',
+                                                                cursor: 'pointer'
+                                                            }
+                                                        }}
+                                                        onClick={() => openVideoModal(video.url)}
+                                                    >
+                                                        <CardContent>
+                                                            <Typography variant="h6" noWrap>
+                                                                {video.name}
+                                                            </Typography>
+                                                            <Button
+                                                                variant="contained"
+                                                                color="primary"
+                                                                fullWidth
+                                                                sx={{ mt: 1 }}
+                                                            >
+                                                                Ver Video
+                                                            </Button>
+                                                        </CardContent>
+                                                    </Card>
+                                                </Grid>
+                                            ))}
+                                        </Grid>
+                                    ) : (
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                height: '100%'
+                                            }}
+                                        >
+                                            <Typography variant="h6" color="text.secondary">
+                                                No hay videos disponibles
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Box>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+                </Container>
+            </Box>
 
-            {/* Modal para reproducir el video */}
-            <Modal show={showModal} onHide={closeModal} centered size="lg">
-                <Modal.Header closeButton>
-                    <Modal.Title>Reproducir Video</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="embed-container">
+            <Dialog
+                open={showModal}
+                onClose={() => setShowModal(false)}
+                maxWidth="md"
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        bgcolor: 'background.paper',
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                        height: 'auto'
+                    }
+                }}
+            >
+                <DialogTitle sx={{ 
+                    bgcolor: 'primary.main', 
+                    color: 'white',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    p: 2
+                }}>
+                    <Typography variant="h6">Reproducir Video</Typography>
+                    <IconButton 
+                        onClick={() => setShowModal(false)}
+                        sx={{ color: 'white' }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent sx={{ p: 0, height: 'auto' }}>
+                    <Box sx={{
+                        width: '100%',
+                        height: '500px',
+                        bgcolor: 'black',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
                         <iframe
                             width="100%"
-                            height="400"
+                            height="100%"
                             src={videoUrl}
                             title="YouTube video player"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
+                            style={{
+                                border: 'none',
+                                display: 'block'
+                            }}
                         />
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={closeModal}>Cerrar</Button>
-                </Modal.Footer>
-            </Modal>
-        </div>
+                    </Box>
+                </DialogContent>
+            </Dialog>
+        </Box>
     );
 };
 

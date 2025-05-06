@@ -213,3 +213,33 @@
 #birthday-input {
     color: gray;
 }
+
+.google-login-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.or-divider {
+  margin: 15px 0;
+  color: #666;
+  font-size: 14px;
+  position: relative;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.or-divider::before {
+  left: 0;
+}
+
+.or-divider::after {
+  right: 0;
+}

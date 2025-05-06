@@ -50,7 +50,7 @@ export default function MainProfileDashboard() {
             try {
                 // Realiza la solicitud al servidor para obtener los perfiles del usuario
                 const profilesResponse = await fetch(
-                    `http://localhost:3002/graphql`,
+                    `http://localhost:4000/graphql`,
                     { 
                         method: 'POST',
                         headers: { 
@@ -88,7 +88,7 @@ export default function MainProfileDashboard() {
 
                 // Realiza la solicitud al servidor para obtener las playlists del usuario
                 const playlistsResponse = await fetch(
-                    `http://localhost:3002/graphql`,
+                    `http://localhost:4000/graphql`,
                     { 
                         method: 'POST',
                         headers: { 
@@ -387,7 +387,7 @@ export default function MainProfileDashboard() {
                                     <div className="main-playlist-actions">
                                         <button
                                             className="main-dashboard-btn main-dashboard-btn-primary"
-                                            onClick={() => navigate(`/update_playlist/${playlist._id}`)}
+                                            onClick={() => navigate(`/update_playlist/${playlist.id}`)}
                                         >
                                             <FaEdit /> Editar
                                         </button>

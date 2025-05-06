@@ -21,15 +21,46 @@ const UpdatePlaylist = () => {
         const fetchPlaylist = async () => {
             const tokenProfile = localStorage.getItem("token_profile");
             try {
-                const response = await fetch(`http://localhost:3001/api/playlists/${playlistId}`, {
-                    headers: { Authorization: `Bearer ${tokenProfile}` },
+                const response = await fetch(`http://localhost:4000/graphql`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${tokenProfile}`
+                    },
+                    body: JSON.stringify({
+                        query: `
+                            query GetPlaylist($playlistId: ID!) {
+                                playlist(id: $playlistId) {
+                                    id
+                                    name
+                                    videos {
+                                        id
+                                        name
+                                        url
+                                        description
+                                    }
+                                    profiles {
+                                        id
+                                        fullName
+                                    }
+                                }
+                            }
+                        `,
+                        variables: {
+                            playlistId: playlistId
+                        }
+                    })
                 });
+
                 if (response.ok) {
-                    const data = await response.json();
-                    setPlaylist(data);
-                    setPlaylistName(data.name);
-                    setVideos(data.videos);
-                    setSelectedProfiles(data.profiles.map((profile) => profile._id));
+                    const result = await response.json();
+                    if (result.data && result.data.playlist) {
+                        const playlistData = result.data.playlist;
+                        setPlaylist(playlistData);
+                        setPlaylistName(playlistData.name);
+                        setVideos(playlistData.videos);
+                        setSelectedProfiles(playlistData.profiles.map(profile => profile.id));
+                    }
                 }
             } catch (error) {
                 console.error("Error al obtener la playlist", error);
@@ -44,12 +75,32 @@ const UpdatePlaylist = () => {
             if (!userId) return;
 
             try {
-                const response = await fetch(`http://localhost:3001/profiles/user/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                const response = await fetch(`http://localhost:4000/graphql`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        query: `
+                            query GetProfilesByUser($userId: ID!) {
+                                profilesByUser(userId: $userId) {
+                                    id
+                                    fullName
+                                }
+                            }
+                        `,
+                        variables: {
+                            userId: userId
+                        }
+                    })
                 });
+
                 if (response.ok) {
-                    const profiles = await response.json();
-                    setAllProfiles(profiles);
+                    const result = await response.json();
+                    if (result.data && result.data.profilesByUser) {
+                        setAllProfiles(result.data.profilesByUser);
+                    }
                 }
             } catch (error) {
                 console.error("Error al obtener los perfiles", error);
@@ -62,7 +113,7 @@ const UpdatePlaylist = () => {
 
     useEffect(() => {
         if (playlist && allProfiles.length > 0) {
-            setSelectedProfiles(playlist.profiles);
+            setSelectedProfiles(playlist.profiles.map(profile => profile.id));
         }
     }, [playlist, allProfiles]);
 
@@ -109,7 +160,7 @@ const UpdatePlaylist = () => {
 
                 if (response.ok) {
                     const updatedVideo = await response.json();
-                    setVideos(videos.map((video) => (video._id === editingVideoId ? updatedVideo : video)));
+                    setVideos(videos.map((video) => (video.id === editingVideoId ? updatedVideo : video)));
                     setNewVideo({ name: "", url: "", description: "" });
                     setEditingVideoId(null);
                     setToastMessage("Video actualizado con éxito");
@@ -165,7 +216,7 @@ const UpdatePlaylist = () => {
 
     const handleEditVideo = (video) => {
         setNewVideo({ name: video.name, url: video.url, description: video.description });
-        setEditingVideoId(video._id);
+        setEditingVideoId(video.id);
     };
 
     const handleDeleteVideo = async (videoId) => {
@@ -177,7 +228,7 @@ const UpdatePlaylist = () => {
             });
 
             if (response.ok) {
-                setVideos(videos.filter((video) => video._id !== videoId));
+                setVideos(videos.filter((video) => video.id !== videoId));
                 setToastMessage("Video eliminado con éxito");
                 setShowToast(true);
             }
@@ -252,7 +303,7 @@ const UpdatePlaylist = () => {
                 <h2 className="section-title">Videos en la Playlist</h2>
                 <div className="video-list">
                     {videos.map((video) => (
-                        <div key={video._id} className="video-card">
+                        <div key={video.id} className="video-card">
                             <div className="video-info">
                                 <h3 className="video-title">{video.name}</h3>
                                 <p className="video-description">{video.description}</p>
@@ -266,7 +317,7 @@ const UpdatePlaylist = () => {
                                 </button>
                                 <button
                                     className="delete-button"
-                                    onClick={() => handleDeleteVideo(video._id)}
+                                    onClick={() => handleDeleteVideo(video.id)}
                                 >
                                     Eliminar
                                 </button>
